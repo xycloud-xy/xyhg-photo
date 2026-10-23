@@ -84,9 +84,10 @@
 
 <body class="bg-paper-texture min-h-screen flex flex-col selection:bg-gold-500/30 selection:text-gold-300">
 
-  <!-- 隐藏的音乐播放器 (默认配置了一首陶笛轻音乐) -->
+  <!-- 隐藏的音乐播放器 -->
   <audio id="bgAudioPlayer" loop preload="auto"></audio>
 
+  <!-- 顶部控制栏 -->
   <header class="sticky top-0 z-30 backdrop-blur-md bg-ink-950/85 border-b border-gold-500/15 transition-all">
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
       <div class="flex items-center gap-2.5">
@@ -99,26 +100,22 @@
 
       <div class="flex items-center gap-1.5 sm:gap-2">
         <!-- 单双列切换 -->
-        <button onclick="toggleGridCols()" id="gridBtn"
-          class="px-2.5 py-1.5 rounded-full bg-ink-800/90 border border-gold-500/35 hover:border-gold-400 text-xs font-medium tracking-wider text-gold-300 transition-all">
-          <span id="ui-btn-grid">单列</span>
+        <button onclick="toggleGridCols()" class="px-2.5 py-1.5 rounded-full bg-ink-800/90 border border-gold-500/35 hover:border-gold-400 text-xs font-medium tracking-wider text-gold-300 transition-all">
+          <span id="ui-btn-grid">双列</span>
         </button>
 
-        <!-- 语言切换按钮 -->
-        <button onclick="toggleLang()" id="langBtn"
-          class="px-2.5 py-1.5 rounded-full bg-ink-800/90 border border-gold-500/35 hover:border-gold-400 text-xs font-medium tracking-wider text-gold-300 transition-all">
+        <!-- 中英文切换 -->
+        <button onclick="toggleLang()" id="langBtn" class="px-2.5 py-1.5 rounded-full bg-ink-800/90 border border-gold-500/35 hover:border-gold-400 text-xs font-medium tracking-wider text-gold-300 transition-all">
           中 / EN
         </button>
 
         <!-- 音乐控制按钮 -->
-        <button onclick="toggleMusic()" id="musicBtn"
-          class="px-3 py-1.5 rounded-full bg-ink-800/90 border border-gold-500/35 hover:border-gold-400 text-xs font-medium tracking-wider text-gold-300 transition-all flex items-center gap-1">
+        <button onclick="toggleMusic()" id="musicBtn" class="px-3 py-1.5 rounded-full bg-ink-800/90 border border-gold-500/35 hover:border-gold-400 text-xs font-medium tracking-wider text-gold-300 transition-all flex items-center gap-1">
           <span id="musicIcon">🔇</span> <span id="ui-btn-music">雅音</span>
         </button>
 
         <!-- 掌席模式入口 -->
-        <button onclick="openPasswordModal()" id="curatorTriggerBtn"
-          class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-ink-800/90 border border-gold-500/35 hover:border-gold-400 text-xs font-medium tracking-wider text-parchment-200 transition-all">
+        <button onclick="openPasswordModal()" id="curatorTriggerBtn" class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-ink-800/90 border border-gold-500/35 hover:border-gold-400 text-xs font-medium tracking-wider text-parchment-200 transition-all">
           <span id="ui-btn-curator">掌席模式</span>
         </button>
       </div>
@@ -130,7 +127,7 @@
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
       <div class="flex items-center gap-2 text-xs text-parchment-100">
         <span class="px-2 py-0.5 rounded bg-gold-500 text-ink-950 font-bold text-[10px] tracking-widest" id="ui-tag-curatormode">掌席模式</span>
-        <span id="ui-text-curatorhint">点击编辑相册，点击右侧添加新菜品</span>
+        <span id="ui-text-curatorhint">点击画册编辑，点击右侧添加新菜品</span>
       </div>
       <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
         <button onclick="openCuratorEditModal()" class="px-3 py-1.5 rounded-lg bg-gold-500 text-ink-950 text-xs font-bold tracking-wider hover:bg-gold-400 shadow-md" id="ui-btn-additem">➕ 添加雅馔</button>
@@ -141,7 +138,7 @@
     </div>
   </div>
 
-  <!-- 首页大图区块 (去除了文字和边框) -->
+  <!-- 首页大图区块 -->
   <section class="relative z-10 pt-4 pb-3 sm:pt-8 sm:pb-6 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
     <div class="relative rounded-2xl overflow-hidden shadow-2xl h-40 sm:h-56 flex items-center justify-center group bg-ink-950">
       <div class="absolute inset-0 transition-transform duration-1000 group-hover:scale-105">
@@ -157,13 +154,14 @@
   <!-- 七大分类导航 -->
   <nav class="sticky top-16 z-20 backdrop-blur-md bg-ink-900/90 border-y border-gold-500/15">
     <div class="max-w-7xl mx-auto py-2 px-3 sm:px-6 lg:px-8">
+      <!-- 添加内边距，解决发光被截断的问题 -->
       <div id="categoryTabs" class="flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-2 -mx-2"></div>
     </div>
   </nav>
 
   <!-- 画册式相册网格 -->
   <main class="relative z-10 flex-1 max-w-7xl mx-auto w-full px-3 sm:px-6 lg:px-8 pt-6 pb-32">
-    <div id="menuGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5"></div>
+    <div id="menuGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-5"></div>
   </main>
 
   <!-- 底部定制悬浮卷 -->
@@ -222,26 +220,26 @@
     </div>
   </div>
 
-  <!-- 高清大图相册查看器 (支持多图轮播) -->
+  <!-- 高清大图相册查看器 (无价格，专注美学) -->
   <div id="itemDetailModal" onclick="if(event.target === this) closeDetailModal()" class="fixed inset-0 z-50 hidden items-center justify-center p-0 bg-black/95 backdrop-blur-xl">
     <div class="relative w-full h-full flex flex-col sm:flex-row">
       <!-- 关闭按钮 -->
       <button onclick="closeDetailModal()" class="absolute top-4 right-4 sm:top-6 sm:right-6 z-30 w-10 h-10 rounded-full bg-ink-800/80 border border-gold-500/40 flex items-center justify-center text-gold-300 text-lg hover:bg-ink-700 backdrop-blur transition-colors">✕</button>
       
       <!-- 左侧全屏原比例大图 (轮播区域) -->
-      <div class="relative flex-1 h-[55%] sm:h-full flex items-center justify-center p-0 bg-black group overflow-hidden">
+      <div class="relative flex-1 h-[60%] sm:h-full flex items-center justify-center p-0 bg-black group overflow-hidden">
         <img id="modalItemImg" src="" class="max-w-full max-h-full object-contain drop-shadow-2xl transition-opacity duration-300" />
         
         <!-- 左右切换箭头 -->
-        <button id="modalPrevBtn" onclick="changeModalImage(-1)" class="carousel-btn absolute left-4 w-10 h-10 rounded-full border border-gold-500/40 flex items-center justify-center text-gold-300 text-xl hidden z-20 hover:scale-110">&lt;</button>
-        <button id="modalNextBtn" onclick="changeModalImage(1)" class="carousel-btn absolute right-4 w-10 h-10 rounded-full border border-gold-500/40 flex items-center justify-center text-gold-300 text-xl hidden z-20 hover:scale-110">&gt;</button>
+        <button id="modalPrevBtn" onclick="changeModalImage(-1)" class="carousel-btn absolute left-4 w-12 h-12 rounded-full border border-gold-500/40 flex items-center justify-center text-gold-300 text-2xl hidden z-20 hover:scale-110">&lt;</button>
+        <button id="modalNextBtn" onclick="changeModalImage(1)" class="carousel-btn absolute right-4 w-12 h-12 rounded-full border border-gold-500/40 flex items-center justify-center text-gold-300 text-2xl hidden z-20 hover:scale-110">&gt;</button>
         
         <!-- 底部轮播指示点 -->
         <div id="modalDots" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20"></div>
       </div>
       
       <!-- 右侧/下方风物志面板 -->
-      <div class="w-full sm:w-[420px] h-[45%] sm:h-full bg-ink-950/90 border-l border-gold-500/20 overflow-y-auto p-6 sm:p-10 flex flex-col justify-between">
+      <div class="w-full sm:w-[420px] h-[40%] sm:h-full bg-ink-950/90 border-l border-gold-500/20 overflow-y-auto p-6 sm:p-10 flex flex-col justify-between">
         <div class="space-y-6">
           <div class="space-y-2">
             <span id="modalItemBadge" class="inline-block seal-stamp px-2 py-0.5 rounded-sm text-[10px]"></span>
@@ -276,7 +274,7 @@
     </div>
   </div>
 
-  <!-- 洒金笺席单 Modal (去除了顶部“雅集珍席”标签和底部价格) -->
+  <!-- 洒金笺席单 Modal (无价格版，强化雅嘱，无标签) -->
   <div id="waiterCardModal" onclick="if(event.target === this) closeWaiterCardModal()" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-md">
     <div class="relative w-full max-w-md max-h-[95vh] overflow-y-auto rounded-2xl p-1.5 bg-gradient-to-b from-gold-400/80 via-gold-600/50 to-gold-400/80 shadow-2xl no-scrollbar">
       
@@ -284,8 +282,9 @@
            style="background-color: #F4EFE6; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Ccircle cx=%2220%22 cy=%2230%22 r=%221%22 fill=%22%23C8A265%22 opacity=%220.5%22/%3E%3Ccircle cx=%2270%22 cy=%2280%22 r=%221.5%22 fill=%22%239E7B42%22 opacity=%220.4%22/%3E%3Ccircle cx=%2240%22 cy=%2250%22 r=%220.8%22 fill=%22%23C8A265%22 opacity=%220.6%22/%3E%3C/svg%3E'); background-size: 150px 150px;">
         <div class="border-[1.5px] border-[#8C6D3F]/50 p-4 sm:p-5 rounded-lg relative bg-transparent">
           
-          <button data-html2canvas-ignore="true" onclick="closeWaiterCardModal()" class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-[#EAE2D3] border border-[#8C6D3F]/50 flex items-center justify-center text-sm shadow-md text-[#5C4D3C] hover:bg-white z-10">✕</button>
+          <button data-html2canvas-ignore="true" onclick="closeWaiterCardModal()" class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-[#EAE2D3] border border-[#8C6D3F]/50 flex items-center justify-center text-sm shadow-md text-[#5C4D3C] z-10">✕</button>
           
+          <!-- 去除雅集珍席顶标 -->
           <div class="text-center space-y-2 border-b-[1.5px] border-[#8C6D3F]/30 pb-4 pt-2">
             <h3 class="text-2xl font-bold tracking-[0.2em] text-[#1A1612] leading-normal py-1" id="card-title">云起·东方雅集席单</h3>
             <div class="text-[9px] tracking-[0.25em] text-[#705528] uppercase">YUNQI PRIVATE TEA & BANQUET SCROLL</div>
@@ -327,7 +326,7 @@
     </div>
   </div>
 
-  <!-- 掌席密码 Modal (无明文提示) -->
+  <!-- 掌席密码 Modal (去除了123456提示) -->
   <div id="passwordModal" onclick="if(event.target === this) closePasswordModal()" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/85 backdrop-blur-md">
     <div class="w-full max-w-sm bg-ink-900 border border-gold-500/40 rounded-2xl p-6 text-center space-y-5 shadow-2xl">
       <div class="inline-block seal-stamp px-2 py-0.5 text-[10px] rounded-sm">权限校验</div>
@@ -352,7 +351,7 @@
     </div>
   </div>
 
-  <!-- 掌席相册编辑 Modal (支持新增、多图与上下架) -->
+  <!-- 掌席相册编辑 Modal (支持新增、多图轮播) -->
   <div id="curatorEditModal" onclick="if(event.target === this) closeCuratorEditModal()" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/85 backdrop-blur-md">
     <div class="w-full max-w-md bg-ink-900 border border-gold-500/40 rounded-2xl p-6 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-gold-500/20 pb-3">
@@ -411,14 +410,10 @@
   </div>
 
   <script>
-    // ==========================================
-    // 默认陶笛/尺八禅意轻音乐
-    // ==========================================
+    // 默认陶笛禅意轻音乐
     const DEFAULT_MUSIC_URL = 'https://cdn.pixabay.com/audio/2021/11/17/audio_0cb0d7eb59.mp3';
 
-    // ==========================================
-    // 默认高质感菜品数据 (全部更新为上传的高清图)
-    // ==========================================
+    // 默认数据配置 (包含本地实拍图命名)
     const DEFAULT_MENU_ITEMS = [
       { id: 'dish-1', category: 'minhai', 
         nameZh: '闽南传统姜母鸭', nameEn: 'Minnan Ginger Duck', 
@@ -482,7 +477,7 @@
     let MENU_ITEMS = [];
     let state = {
       lang: 'zh', 
-      singleCol: false, // 默认多列展示
+      singleCol: false, // false表示网格多列，true表示单列大图
       activeCategory: 'all', 
       curatorMode: false,
       activeItem: null, 
@@ -502,17 +497,31 @@
     // 生命周期与数据初始化
     // ==========================================
     window.addEventListener('DOMContentLoaded', () => {
-      const savedMenu = localStorage.getItem('yunqi_menu_data');
-      MENU_ITEMS = savedMenu ? JSON.parse(savedMenu) : [...DEFAULT_MENU_ITEMS];
+      try {
+        const savedMenu = localStorage.getItem('yunqi_menu_data');
+        if (savedMenu) {
+            let parsed = JSON.parse(savedMenu);
+            if (Array.isArray(parsed)) {
+                MENU_ITEMS = parsed;
+            } else {
+                MENU_ITEMS = [...DEFAULT_MENU_ITEMS];
+            }
+        } else {
+            MENU_ITEMS = [...DEFAULT_MENU_ITEMS];
+        }
+      } catch (e) {
+          MENU_ITEMS = [...DEFAULT_MENU_ITEMS];
+      }
+
       state.musicUrl = localStorage.getItem('yunqi_music_url') || DEFAULT_MUSIC_URL;
       
-      // 保证旧数据兼容新的 images 数组
+      // 兼容旧数据结构
       MENU_ITEMS.forEach(m => {
         if(m.image && !m.images) { m.images = [m.image]; delete m.image; }
         if(m.visible === undefined) m.visible = true;
       });
 
-      state.wishlist = []; // 每次打开强制清空心愿单，保证全新状态
+      state.wishlist = []; // 打开强制清空心愿单
       
       initAudioPlayer();
       renderAll();
@@ -542,15 +551,17 @@
     }
 
     function updateStaticUITexts() {
-      document.getElementById('ui-btn-grid').textContent = state.singleCol ? t('单列', 'List') : t('双列', 'Grid');
+      // 按钮文字显示当前正处于的状态（所见即所得）
+      const gridBtnEl = document.getElementById('ui-btn-grid');
+      if(gridBtnEl) gridBtnEl.textContent = state.singleCol ? t('单列', 'Single Col') : t('双列', 'Grid Cols');
+      
       document.getElementById('ui-tag-yaji').textContent = t('云起', 'Yunqi');
       document.getElementById('brandTitle').textContent = t('云起·闽宴茶事', 'Yunqi Fine Dining');
       document.getElementById('ui-btn-music').textContent = t('雅音', 'Music');
       document.getElementById('ui-btn-curator').textContent = t('掌席模式', 'Curator');
       document.getElementById('ui-tag-curatormode').textContent = t('掌席模式', 'Curator Mode');
-      document.getElementById('ui-text-curatorhint').textContent = t('点击编辑相册，点击右侧添加新菜品', 'Click image to edit, click right to add');
+      document.getElementById('ui-text-curatorhint').textContent = t('点击画册编辑，点击右侧添加新菜品', 'Click image to edit, click right to add');
       
-      // 掌席模式控制栏按钮翻译
       document.getElementById('ui-btn-additem').textContent = t('➕ 添加雅馔', '➕ Add Item');
       document.getElementById('ui-btn-editmusic').textContent = t('🎵 修改音乐', '🎵 Edit Music');
       document.getElementById('ui-btn-reset').textContent = t('恢复默认', 'Reset');
@@ -574,7 +585,6 @@
       document.getElementById('ui-drawer-title').textContent = t('点 单 备 忘', 'WISHLIST');
       document.getElementById('ui-drawer-btn').textContent = t('生成雅集席单确认', 'Confirm & Generate Scroll');
       
-      // 席单内部翻译
       document.getElementById('card-title').textContent = t('云起·东方雅集席单', 'Yunqi Oriental Banquet Scroll');
       document.getElementById('card-lbl-room').textContent = t('【 私享茶寮 】', '[ Pavilion ]');
       document.getElementById('card-lbl-time').textContent = t('【 雅集时辰 】', '[ Time ]');
@@ -586,9 +596,6 @@
       document.getElementById('ui-btn-saveimg').innerHTML = `<span>${t('保存席单为高清图片', 'Save Scroll as Image')}</span>`;
     }
 
-    // ==========================================
-    // 渲染系统
-    // ==========================================
     function renderAll() {
       updateStaticUITexts();
       renderCategories();
@@ -598,7 +605,9 @@
     }
 
     function renderCategories() {
-      document.getElementById('categoryTabs').innerHTML = CATEGORIES.map(cat => {
+      const tabs = document.getElementById('categoryTabs');
+      if(!tabs) return;
+      tabs.innerHTML = CATEGORIES.map(cat => {
         const isActive = state.activeCategory === cat.id;
         const count = cat.id === 'all' 
           ? MENU_ITEMS.filter(i=>state.curatorMode || i.visible).length 
@@ -612,10 +621,12 @@
     // 渲染相册网格
     function renderMenuGrid() {
       const grid = document.getElementById('menuGrid');
-      // 根据单双列状态切换 CSS 类名
+      if(!grid) return;
+      
+      // 单双列类名控制：singleCol为true时，使用1列或2列的大图；为false时，使用更密集的方块网格
       grid.className = state.singleCol 
         ? 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6' 
-        : 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5';
+        : 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-5';
 
       const filtered = MENU_ITEMS.filter(item => {
         if (!state.curatorMode && !item.visible) return false;
@@ -624,7 +635,7 @@
       
       grid.innerHTML = filtered.map(item => {
         const qty = state.wishlist.find(w => w.itemId === item.id)?.qty || 0;
-        const coverImg = (item.images && item.images.length > 0) ? item.images[0] : '';
+        const coverImg = (item.images && item.images.length > 0) ? item.images[0] : 'https://placehold.co/800x800/1a1815/dfc590?text=Image+Not+Found';
         const name = t(item.nameZh, item.nameEn);
         const badge = t(item.badgeZh, item.badgeEn);
         
@@ -719,7 +730,6 @@
       const len = state.currentImgs.length;
       if (len <= 1) return;
       state.currentImgIndex = (state.currentImgIndex + delta + len) % len;
-      // 轻微淡入淡出
       const imgEl = document.getElementById('modalItemImg');
       imgEl.classList.add('opacity-50');
       setTimeout(() => {
@@ -887,7 +897,7 @@
 
     function toggleMusic() {
       if(!audioPlayer) initAudioPlayer();
-      hasInteracted = true; // 手动点击后标记为已交互
+      hasInteracted = true; 
       const btn = document.getElementById('musicBtn');
       const icon = document.getElementById('musicIcon');
       
@@ -911,16 +921,15 @@
       }
     }
 
-    // 全局无感触发器 (触碰屏幕或滑动即自动播放)
+    // 全局无感触发器 (触碰屏幕、滑动、点击即自动播放)
     const startAudioInteraction = () => {
       if (!hasInteracted) {
         hasInteracted = true;
         if (!isAudioPlaying) toggleMusic();
-        // 触发一次后立刻销毁监听
-        ['click', 'touchstart', 'scroll'].forEach(evt => document.body.removeEventListener(evt, startAudioInteraction));
+        ['click', 'touchstart', 'scroll', 'mousemove'].forEach(evt => document.body.removeEventListener(evt, startAudioInteraction));
       }
     };
-    ['click', 'touchstart', 'scroll'].forEach(evt => document.body.addEventListener(evt, startAudioInteraction, { once: true }));
+    ['click', 'touchstart', 'scroll', 'mousemove'].forEach(evt => document.body.addEventListener(evt, startAudioInteraction, { once: true }));
 
     function openMusicEditModal() { document.getElementById('musicUrlInput').value = state.musicUrl; document.getElementById('musicEditModal').classList.remove('hidden'); document.getElementById('musicEditModal').classList.add('flex'); }
     function closeMusicEditModal() { document.getElementById('musicEditModal').classList.add('hidden'); document.getElementById('musicEditModal').classList.remove('flex'); }
@@ -948,7 +957,7 @@
         document.getElementById('curatorBanner').classList.remove('hidden'); 
         document.getElementById('curatorTriggerBtn').classList.add('hidden');
         showToast(t('掌席权限已开启', 'Curator Mode Enabled'));
-        renderAll(); // 刷新界面，显示编辑和下架图标
+        renderAll();
       } else {
         showToast(t('密码错误，请重新输入', 'Incorrect password'));
       }
@@ -962,10 +971,10 @@
       renderAll();
     }
 
-    // 菜品相册编辑 (支持新增、多图与上下架)
+    // 菜品相册编辑 (支持无id的新增、多图与上下架)
     function openCuratorEditModal(id) {
       if (id) {
-        // 编辑旧菜品
+        // 编辑模式
         const item = MENU_ITEMS.find(i => i.id === id);
         if(!item) return;
         document.getElementById('editModalTitle').textContent = t('编辑相册画作', 'Edit Dish');
@@ -980,9 +989,9 @@
         document.getElementById('editItemStoryZh').value = item.storyZh || '';
         document.getElementById('editItemStoryEn').value = item.storyEn || '';
       } else {
-        // 新增模式：清空所有字段
+        // 新增模式
         document.getElementById('editModalTitle').textContent = t('新增雅馔', 'Add New Dish');
-        document.getElementById('editItemId').value = ''; // 空 id 代表新建
+        document.getElementById('editItemId').value = '';
         document.getElementById('editItemVisible').checked = true;
         document.getElementById('editItemImages').value = '';
         document.getElementById('editItemNameZh').value = '';
@@ -1009,7 +1018,7 @@
       const finalImages = cleanUrls.length > 0 ? cleanUrls : ['https://placehold.co/800x800/1a1815/dfc590?text=No+Image'];
 
       if (id) {
-        // 更新已有菜品
+        // 更新已有
         const idx = MENU_ITEMS.findIndex(i => i.id === id);
         if(idx > -1) {
           MENU_ITEMS[idx].visible = document.getElementById('editItemVisible').checked;
@@ -1022,10 +1031,10 @@
           MENU_ITEMS[idx].storyEn = document.getElementById('editItemStoryEn').value;
         }
       } else {
-        // 新建全新菜品
+        // 新建并加入当前分类 (如果是“全部”则加入默认的minhai)
         const newItem = {
           id: 'dish-' + Date.now(),
-          category: state.activeCategory === 'all' ? 'minhai' : state.activeCategory, // 自动加入当前选中的分类
+          category: state.activeCategory === 'all' ? 'minhai' : state.activeCategory,
           visible: document.getElementById('editItemVisible').checked,
           images: finalImages,
           nameZh: document.getElementById('editItemNameZh').value || '未命名雅馔',
@@ -1035,7 +1044,7 @@
           storyZh: document.getElementById('editItemStoryZh').value,
           storyEn: document.getElementById('editItemStoryEn').value
         };
-        MENU_ITEMS.unshift(newItem); // 添加到数组最前面
+        MENU_ITEMS.unshift(newItem); 
       }
       
       saveMenuData();
@@ -1047,8 +1056,11 @@
     // Toast
     let toastTimer;
     function showToast(msg) {
-      document.getElementById('toastMessage').textContent = msg;
       const box = document.getElementById('toastBox');
+      if(!box) return;
+      const msgEl = document.getElementById('toastMessage');
+      if(msgEl) msgEl.textContent = msg;
+      
       box.classList.remove('opacity-0', '-translate-y-4'); 
       box.classList.add('opacity-100', 'translate-y-0');
       clearTimeout(toastTimer); 
