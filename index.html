@@ -8,7 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Serif+SC:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   
   <script>
@@ -24,8 +24,7 @@
           },
           fontFamily: {
             serif: ['"Noto Serif SC"', '"Cormorant Garamond"', 'serif'],
-            en: ['"Cormorant Garamond"', '"Noto Serif SC"', 'serif'],
-            sans: ['"Plus Jakarta Sans"', '-apple-system', 'sans-serif']
+            en: ['"Cormorant Garamond"', '"Noto Serif SC"', 'serif']
           }
         }
       }
@@ -33,15 +32,8 @@
   </script>
 
   <style>
-    :root {
-      /* 固定的东方暗调光影 */
-      --season-bg: #11100E;
-      --season-color-1: rgba(200, 162, 101, 0.25);
-      --season-color-2: rgba(155, 44, 32, 0.15);
-    }
-
     body {
-      background-color: var(--season-bg);
+      background-color: #11100E;
       color: #EAE4DC;
       font-family: 'Noto Serif SC', serif;
       overflow-x: hidden;
@@ -50,8 +42,8 @@
 
     .bg-paper-texture {
       background-image: 
-        radial-gradient(circle at 15% 15%, var(--season-color-1) 0%, transparent 65%),
-        radial-gradient(circle at 85% 85%, var(--season-color-2) 0%, transparent 70%),
+        radial-gradient(circle at 15% 15%, rgba(200, 162, 101, 0.25) 0%, transparent 65%),
+        radial-gradient(circle at 85% 85%, rgba(155, 44, 32, 0.15) 0%, transparent 70%),
         url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
     }
 
@@ -63,37 +55,11 @@
       letter-spacing: 0.12em;
     }
 
-    .oriental-card {
-      background: linear-gradient(180deg, rgba(26, 24, 21, 0.6) 0%, rgba(17, 16, 14, 0.9) 100%);
-      border: 1px solid rgba(200, 162, 101, 0.15);
+    .gallery-card {
       transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .oriental-card:hover {
-      border-color: rgba(200, 162, 101, 0.6);
-      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.9), 0 0 30px -5px rgba(200, 162, 101, 0.15);
-      transform: translateY(-4px);
-    }
-
-    .image-vignette::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.6) 100%);
-      pointer-events: none;
-    }
-
-    @keyframes cardFadeUp {
-      from { opacity: 0; transform: translateY(14px) scale(0.985); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    .animate-card-enter {
-      animation: cardFadeUp 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    .cat-btn-active {
-      background: linear-gradient(135deg, #D4AF37 0%, #C8A265 100%);
-      color: #0C0B09;
-      box-shadow: 0 4px 16px rgba(200, 162, 101, 0.35);
+    .gallery-card:hover img {
+      transform: scale(1.05);
     }
     
     .music-playing {
@@ -106,44 +72,49 @@
 
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* 轮播图箭头样式 */
+    .carousel-btn {
+      background: rgba(12, 11, 9, 0.6);
+      backdrop-filter: blur(4px);
+      transition: all 0.3s;
+    }
+    .carousel-btn:hover { background: rgba(200, 162, 101, 0.8); color: #0C0B09; }
   </style>
 </head>
 
 <body class="bg-paper-texture min-h-screen flex flex-col selection:bg-gold-500/30 selection:text-gold-300">
 
-  <!-- Ambient Mist Canvas -->
-  <canvas id="ambientCanvas" class="fixed inset-0 pointer-events-none z-0 opacity-60"></canvas>
+  <!-- 隐藏的音乐播放器 (默认配置了一首陶笛/尺八禅意轻音乐) -->
+  <audio id="bgAudioPlayer" loop preload="auto"></audio>
 
   <header class="sticky top-0 z-30 backdrop-blur-md bg-ink-950/85 border-b border-gold-500/15 transition-all">
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
       <div class="flex items-center gap-2.5">
-        <div class="seal-stamp px-2 py-1 rounded-sm text-xs font-semibold tracking-widest select-none">雅集</div>
+        <div class="seal-stamp px-2 py-1 rounded-sm text-xs font-semibold tracking-widest select-none" id="ui-tag-yaji">雅集</div>
         <div>
           <span class="text-sm sm:text-lg font-semibold tracking-wider text-parchment-100 block leading-none" id="brandTitle">云起·闽宴茶事</span>
-          <span class="text-[9px] sm:text-[10px] tracking-[0.15em] sm:tracking-[0.18em] text-gold-500 uppercase font-en block mt-0.5" id="brandSub">ORIENTAL FINE DINING</span>
+          <span class="text-[9px] sm:text-[10px] tracking-[0.15em] sm:tracking-[0.18em] text-gold-500 uppercase font-en block mt-0.5">ORIENTAL FINE DINING</span>
         </div>
       </div>
 
       <div class="flex items-center gap-1.5 sm:gap-2">
-        <button id="mobileColToggleBtn" onclick="toggleMobileGridCols()"
-          class="sm:hidden flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-ink-800/90 border border-gold-500/25 text-xs text-parchment-200 active:scale-95 transition">
-          <span id="mobileColText" class="text-[11px] text-gold-300">画册</span>
+        <!-- 语言切换按钮 -->
+        <button onclick="toggleLang()" id="langBtn"
+          class="px-2.5 py-1.5 rounded-full bg-ink-800/90 border border-gold-500/35 hover:border-gold-400 text-xs font-medium tracking-wider text-gold-300 transition-all">
+          中 / EN
         </button>
-        
-        <!-- 环境音开关 -->
+
+        <!-- 音乐控制按钮 -->
         <button onclick="toggleMusic()" id="musicBtn"
-          class="px-3 py-1.5 rounded-full bg-ink-800/90 border border-gold-500/35 hover:border-gold-400 text-xs font-medium tracking-wider text-gold-300 transition-all active:scale-95 flex items-center gap-1">
-          <span id="musicIcon">🔇</span> 雅音
+          class="px-3 py-1.5 rounded-full bg-ink-800/90 border border-gold-500/35 hover:border-gold-400 text-xs font-medium tracking-wider text-gold-300 transition-all flex items-center gap-1">
+          <span id="musicIcon">🔇</span> <span id="ui-btn-music">雅音</span>
         </button>
 
-        <button onclick="openPasswordModal()"
-          class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-ink-800/90 border border-gold-500/35 hover:border-gold-400 text-xs font-medium tracking-wider text-parchment-200 transition-all active:scale-95">
-          <span>掌席模式</span>
-        </button>
-
-        <button onclick="toggleLanguage()" 
-          class="px-3 py-1.5 rounded-full bg-ink-800/90 border border-gold-500/35 hover:border-gold-400 text-xs font-medium tracking-wider text-gold-400 transition-all active:scale-95 hidden sm:block">
-          <span id="langIndicator">中/EN</span>
+        <!-- 掌席模式入口 -->
+        <button onclick="openPasswordModal()" id="curatorTriggerBtn"
+          class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-ink-800/90 border border-gold-500/35 hover:border-gold-400 text-xs font-medium tracking-wider text-parchment-200 transition-all">
+          <span id="ui-btn-curator">掌席模式</span>
         </button>
       </div>
     </div>
@@ -153,214 +124,281 @@
   <div id="curatorBanner" class="hidden sticky top-16 z-30 bg-gradient-to-r from-cinnabar-700/95 via-ink-900/95 to-ink-900/95 backdrop-blur-md border-b border-gold-400/40 shadow-lg">
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
       <div class="flex items-center gap-2 text-xs text-parchment-100">
-        <span class="px-2 py-0.5 rounded bg-gold-500 text-ink-950 font-bold text-[10px] tracking-widest">掌席模式</span>
-        <span id="curatorBannerDesc">掌席模式已开启：点击任意卡片即可替换图片、修改介绍</span>
+        <span class="px-2 py-0.5 rounded bg-gold-500 text-ink-950 font-bold text-[10px] tracking-widest" id="ui-tag-curatormode">掌席模式</span>
+        <span id="ui-text-curatorhint">点击任意相册图片即可修改资料</span>
       </div>
       <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
-        <button onclick="clearMenuData()" class="px-3 py-1.5 rounded-lg bg-ink-950/80 border border-cinnabar-500/40 text-parchment-300 text-xs tracking-wider transition">恢复默认菜单</button>
+        <button onclick="openMusicEditModal()" class="px-3 py-1.5 rounded-lg bg-ink-950/80 border border-gold-500/40 text-gold-300 text-xs tracking-wider hover:bg-gold-500/20" id="ui-btn-editmusic">🎵 修改音乐</button>
+        <button onclick="clearMenuData()" class="px-3 py-1.5 rounded-lg bg-ink-950/80 border border-cinnabar-500/40 text-parchment-300 text-xs tracking-wider hover:bg-cinnabar-500/20" id="ui-btn-reset">恢复默认</button>
+        <button onclick="exitCuratorMode()" class="px-3 py-1.5 rounded-lg bg-gold-500 text-ink-950 text-xs font-bold tracking-wider hover:bg-gold-400" id="ui-btn-exitcurator">退出掌席</button>
       </div>
     </div>
   </div>
 
+  <!-- 首页大图区块 (去除了多余文字和边框标签) -->
   <section class="relative z-10 pt-4 pb-3 sm:pt-8 sm:pb-6 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-    <div class="relative rounded-2xl overflow-hidden border border-gold-500/25 bg-ink-900/90 shadow-2xl h-48 sm:h-64 flex items-center justify-center">
-      <div class="absolute inset-0 opacity-40">
+    <div class="relative rounded-2xl overflow-hidden border border-gold-500/25 bg-ink-900/90 shadow-2xl h-40 sm:h-56 flex items-center justify-center group">
+      <div class="absolute inset-0 opacity-50 transition-transform duration-1000 group-hover:scale-105">
         <img src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1600&q=80" alt="Vibe" class="w-full h-full object-cover object-center" />
         <div class="absolute inset-0 bg-gradient-to-t from-ink-950 via-transparent to-ink-950/80"></div>
       </div>
       <div class="relative z-10 text-center space-y-3 px-4">
-        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-ink-950/85 border border-gold-500/30 text-gold-400 text-xs tracking-widest mx-auto">
-          <span class="w-1.5 h-1.5 rounded-full bg-cinnabar-500"></span>
-    
-        </div>
-        <h1 class="text-2xl sm:text-4xl lg:text-5xl font-normal tracking-widest text-parchment-100 drop-shadow-md">山 海 入 馔 · 寻 味 溯 源</h1>
-        <p class="text-xs sm:text-sm text-parchment-300 tracking-wide font-light max-w-xl mx-auto">赏心悦目的东方光影，品鉴每一道雅馔背后的风物志。</p>
+        <h1 class="text-2xl sm:text-4xl lg:text-5xl font-normal tracking-widest text-parchment-100 drop-shadow-md" id="ui-text-slogan">山 海 入 馔 · 寻 味 溯 源</h1>
       </div>
     </div>
   </section>
 
+  <!-- 七大分类导航 -->
   <nav class="sticky top-16 z-20 backdrop-blur-md bg-ink-900/90 border-y border-gold-500/15">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5">
+    <div class="max-w-7xl mx-auto py-2 px-3 sm:px-6 lg:px-8">
       <div id="categoryTabs" class="flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-2 -mx-2"></div>
     </div>
   </nav>
 
-  <main class="relative z-10 flex-1 max-w-7xl mx-auto w-full px-3 sm:px-6 lg:px-8 pt-6 pb-20">
-    <div id="menuGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"></div>
+  <!-- 画册式相册网格 (小图胶片感) -->
+  <main class="relative z-10 flex-1 max-w-7xl mx-auto w-full px-3 sm:px-6 lg:px-8 pt-6 pb-32">
+    <div id="menuGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5"></div>
   </main>
 
-  <footer class="relative z-10 border-t border-gold-500/15 bg-ink-950/90 pt-8 pb-32 px-4 text-center">
-    <div class="max-w-3xl mx-auto space-y-3">
-      <div class="inline-block seal-stamp px-2 py-0.5 text-[10px] rounded-sm">云起珍馔</div>
-      <p class="text-xs sm:text-sm text-gold-300 tracking-[0.2em] font-light">「 食有山海古早味，席伴武夷岩骨香 」</p>
-    </div>
-  </footer>
-
-  <!-- BOTTOM DOCK (定制卷) -->
-  <div class="fixed bottom-2 sm:bottom-4 inset-x-0 z-30 px-2 sm:px-6 pointer-events-none">
+  <!-- 底部定制悬浮卷 -->
+  <div class="fixed bottom-4 inset-x-0 z-30 px-3 sm:px-6 pointer-events-none">
     <div class="max-w-4xl mx-auto bg-ink-900/95 backdrop-blur-xl border border-gold-500/50 rounded-2xl shadow-2xl pointer-events-auto overflow-hidden transition-all">
       <div id="dockExpandPanel" class="hidden border-b border-gold-500/20 bg-ink-950/95 p-4 sm:p-6 space-y-5 max-h-[70vh] overflow-y-auto">
         <div class="flex items-center justify-between border-b border-gold-500/15 pb-3">
           <div class="flex items-center gap-2">
-            <span class="seal-stamp px-2 py-0.5 text-[10px] rounded-sm">雅集定制</span>
-            <h4 class="text-sm font-medium text-gold-300 tracking-wider">席位雅集定制卷</h4>
+            <span class="seal-stamp px-2 py-0.5 text-[10px] rounded-sm" id="ui-tag-custom">定制</span>
+            <h4 class="text-sm font-medium text-gold-300 tracking-wider" id="ui-title-custom">席位雅集定制卷</h4>
           </div>
-          <button onclick="toggleDockScrollExpand(false)" class="px-3 py-1 rounded-lg bg-ink-800 text-xs text-parchment-300 hover:bg-ink-700">收起 ✕</button>
+          <button onclick="toggleDockScrollExpand(false)" class="px-3 py-1 rounded-lg bg-ink-800 text-xs text-parchment-300 hover:bg-ink-700">✕</button>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div class="space-y-4">
             <div class="bg-ink-900/80 border border-gold-500/20 rounded-xl p-3.5 space-y-2">
               <div class="flex items-center justify-between">
-                <span class="text-xs text-gold-400 font-medium tracking-wider">一、入席人数（2–12位）</span>
+                <span class="text-xs text-gold-400 font-medium tracking-wider" id="ui-label-guests">一、入席人数</span>
                 <span id="dockGuestsValue" class="text-sm font-semibold text-parchment-100">4 位</span>
               </div>
               <input type="range" id="dockGuestsSlider" min="2" max="12" value="4" oninput="setDinersValue(this.value)" class="w-full accent-gold-500 h-1.5 bg-ink-950 rounded-lg" />
             </div>
             <div class="bg-ink-900/80 border border-gold-500/20 rounded-xl p-3.5 space-y-2">
-              <div class="text-xs text-gold-400 font-medium tracking-wider">二、雅集时辰</div>
+              <div class="text-xs text-gold-400 font-medium tracking-wider" id="ui-label-time">二、雅集时辰</div>
               <div id="dockTimePills" class="grid grid-cols-2 gap-2"></div>
             </div>
           </div>
           <div class="space-y-4">
             <div class="bg-ink-900/80 border border-gold-500/20 rounded-xl p-3.5 space-y-2">
-              <div class="text-xs text-gold-400 font-medium tracking-wider">三、私享茶寮</div>
+              <div class="text-xs text-gold-400 font-medium tracking-wider" id="ui-label-room">三、私享茶寮</div>
               <div id="dockPavilionCards" class="grid grid-cols-1 gap-2"></div>
             </div>
             <div class="bg-ink-900/80 border border-gold-500/20 rounded-xl p-3.5 space-y-2">
-              <label class="text-xs text-gold-400 font-medium tracking-wider block">四、席间雅嘱 / 偏好备注</label>
-              <input type="text" id="dockBanquetNote" oninput="updateBanquetNote(this.value)" placeholder="例：寿宴布置、少油免辣、孕妇忌口..." class="w-full bg-ink-950 border border-gold-500/30 rounded-lg px-3 py-2.5 text-xs text-parchment-100 focus:outline-none focus:border-gold-400" />
+              <label class="text-xs text-gold-400 font-medium tracking-wider block" id="ui-label-note">四、席间雅嘱 / 偏好备注</label>
+              <input type="text" id="dockBanquetNote" oninput="updateBanquetNote(this.value)" placeholder="例：少油免辣、孕妇忌口、寿宴布置..." class="w-full bg-ink-950 border border-gold-500/30 rounded-lg px-3 py-2.5 text-xs text-parchment-100 focus:outline-none focus:border-gold-400" />
             </div>
           </div>
         </div>
       </div>
       <div class="p-3 sm:p-4 flex items-center justify-between gap-3">
         <div class="flex items-center gap-3 min-w-0">
-          <div onclick="openWishlistDrawer()" class="relative w-12 h-12 rounded-xl bg-gradient-to-br from-gold-500/20 to-ink-800 border border-gold-500/40 flex items-center justify-center cursor-pointer shrink-0">
+          <div onclick="openWishlistDrawer()" class="relative w-12 h-12 rounded-xl bg-gradient-to-br from-gold-500/20 to-ink-800 border border-gold-500/40 flex items-center justify-center cursor-pointer shrink-0 shadow-inner hover:scale-105 transition-transform">
             <span class="text-xl">📜</span>
             <span id="wishlistBadgeCount" class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-cinnabar-600 text-parchment-100 text-[10px] font-bold flex items-center justify-center border border-ink-900">0</span>
           </div>
           <div onclick="openWishlistDrawer()" class="cursor-pointer min-w-0">
-            <div class="text-sm font-medium text-parchment-100 truncate">我的点单备忘</div>
+            <div class="text-sm font-medium text-parchment-100 truncate" id="ui-text-wishlist">我的点单备忘</div>
             <p id="wishlistBarSub" class="text-xs text-gold-400 truncate mt-0.5">已收录 0 款雅馔</p>
           </div>
         </div>
         <div class="flex items-center gap-2.5 shrink-0">
-          <button onclick="toggleDockScrollExpand()" class="px-3 py-2.5 rounded-xl bg-ink-800 border border-gold-500/35 text-gold-300 text-xs flex items-center gap-1"><span id="mobileExpandArrow">展卷定制 ▲</span></button>
-          <button onclick="openBanquetScrollModal()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-gold-500 to-gold-400 text-ink-950 font-bold text-xs tracking-wider shadow-md">生成席单</button>
+          <button onclick="toggleDockScrollExpand()" class="px-3 py-2.5 rounded-xl bg-ink-800 border border-gold-500/35 text-gold-300 text-xs flex items-center gap-1"><span id="mobileExpandArrow">展卷 ▲</span></button>
+          <button onclick="openBanquetScrollModal()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-gold-500 to-gold-400 text-ink-950 font-bold text-xs tracking-wider shadow-md hover:scale-105 transition-transform" id="ui-btn-generate">生成席单</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 相册模式 Detail Modal (无价格无指标) -->
-  <div id="itemDetailModal" onclick="if(event.target === this) closeDetailModal()" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-black/85 backdrop-blur-md">
-    <div class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-ink-900 border-t sm:border border-gold-500/40 rounded-t-3xl sm:rounded-2xl shadow-2xl text-parchment-100 animate-card-enter">
-      <div class="relative aspect-square sm:aspect-[4/3] w-full image-vignette bg-ink-950">
-        <img id="modalItemImg" src="" class="w-full h-full object-cover" />
-        <button onclick="closeDetailModal()" class="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-ink-950/70 border border-gold-500/40 flex items-center justify-center text-parchment-200 text-lg hover:bg-ink-800 backdrop-blur">✕</button>
-      </div>
-      <div class="p-5 sm:p-8 space-y-5 -mt-10 relative z-20 bg-gradient-to-t from-ink-900 via-ink-900 to-transparent pt-12">
-        <div class="text-center space-y-2">
-          <span id="modalItemBadge" class="inline-block seal-stamp px-2 py-0.5 rounded-sm text-[10px]"></span>
-          <h3 id="modalItemTitle" class="text-2xl sm:text-3xl font-semibold text-gold-300 tracking-wider"></h3>
-          <p id="modalItemOneLiner" class="text-sm sm:text-base text-parchment-200 italic font-light"></p>
-        </div>
+  <!-- 高清大图相册查看器 (支持多图轮播) -->
+  <div id="itemDetailModal" onclick="if(event.target === this) closeDetailModal()" class="fixed inset-0 z-50 hidden items-center justify-center p-0 bg-black/95 backdrop-blur-xl">
+    <div class="relative w-full h-full flex flex-col sm:flex-row">
+      <!-- 关闭按钮 -->
+      <button onclick="closeDetailModal()" class="absolute top-4 right-4 sm:top-6 sm:right-6 z-30 w-10 h-10 rounded-full bg-ink-800/80 border border-gold-500/40 flex items-center justify-center text-gold-300 text-lg hover:bg-ink-700 backdrop-blur transition-colors">✕</button>
+      
+      <!-- 左侧全屏原比例大图 (轮播区域) -->
+      <div class="relative flex-1 h-[55%] sm:h-full flex items-center justify-center p-0 bg-black group overflow-hidden">
+        <img id="modalItemImg" src="" class="max-w-full max-h-full object-contain drop-shadow-2xl transition-opacity duration-300" />
         
-        <div class="p-5 rounded-xl bg-ink-950/80 border border-gold-500/20 space-y-3 mt-4">
-          <div class="flex items-center gap-2 justify-center">
-            <span class="w-8 h-px bg-gold-500/40"></span>
-            <div class="text-[11px] text-gold-400 tracking-[0.2em] font-semibold">背 景 溯 源</div>
-            <span class="w-8 h-px bg-gold-500/40"></span>
+        <!-- 左右切换箭头 (仅多图时显示) -->
+        <button id="modalPrevBtn" onclick="changeModalImage(-1)" class="carousel-btn absolute left-4 w-10 h-10 rounded-full border border-gold-500/40 flex items-center justify-center text-gold-300 text-xl hidden z-20 hover:scale-110">&lt;</button>
+        <button id="modalNextBtn" onclick="changeModalImage(1)" class="carousel-btn absolute right-4 w-10 h-10 rounded-full border border-gold-500/40 flex items-center justify-center text-gold-300 text-xl hidden z-20 hover:scale-110">&gt;</button>
+        
+        <!-- 底部轮播指示点 -->
+        <div id="modalDots" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20"></div>
+      </div>
+      
+      <!-- 右侧/下方风物志面板 -->
+      <div class="w-full sm:w-[420px] h-[45%] sm:h-full bg-ink-950/90 border-l border-gold-500/20 overflow-y-auto p-6 sm:p-10 flex flex-col justify-between">
+        <div class="space-y-6">
+          <div class="space-y-2">
+            <span id="modalItemBadge" class="inline-block seal-stamp px-2 py-0.5 rounded-sm text-[10px]"></span>
+            <h3 id="modalItemTitle" class="text-2xl sm:text-3xl font-semibold text-gold-300 tracking-wider"></h3>
           </div>
-          <p id="modalItemStory" class="text-sm text-parchment-300 leading-loose text-center font-light px-2"></p>
+          <div class="pt-4 border-t border-gold-500/20">
+            <div class="flex items-center gap-2 mb-4">
+              <div class="w-1.5 h-1.5 bg-cinnabar-500 rounded-full"></div>
+              <span class="text-xs text-gold-400 tracking-[0.2em] font-medium" id="ui-label-story">背 景 溯 源</span>
+            </div>
+            <p id="modalItemStory" class="text-sm text-parchment-200 leading-loose font-light"></p>
+          </div>
         </div>
-
-        <div class="flex items-center justify-center gap-4 pt-4">
-          <button onclick="confirmAddToWishlist()" class="px-8 py-3 rounded-full bg-gradient-to-r from-gold-500 to-gold-400 text-ink-950 font-bold text-sm tracking-widest shadow-lg hover:scale-105 transition-transform">加入点单备忘</button>
+        <div class="mt-8 pt-6 border-t border-gold-500/20 flex gap-4">
+          <button onclick="confirmAddToWishlist()" class="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-gold-500 to-gold-400 text-ink-950 font-bold text-sm tracking-widest shadow-lg hover:shadow-xl transition-shadow" id="ui-btn-add">加入备忘</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Wishlist Drawer -->
+  <!-- 点单备忘抽屉 -->
   <div id="wishlistDrawerModal" onclick="if(event.target === this) closeWishlistDrawer()" class="fixed inset-0 z-50 hidden justify-end bg-black/80 backdrop-blur-sm">
     <div class="relative w-full max-w-md bg-ink-900 h-full flex flex-col border-l border-gold-500/35 shadow-2xl text-parchment-100">
       <div class="p-5 border-b border-gold-500/20 flex items-center justify-between bg-ink-950">
-        <h3 class="text-base font-medium text-gold-300 tracking-wider">点 单 备 忘</h3>
+        <h3 class="text-base font-medium text-gold-300 tracking-wider" id="ui-drawer-title">点 单 备 忘</h3>
         <button onclick="closeWishlistDrawer()" class="w-8 h-8 rounded-full bg-ink-800 flex items-center justify-center text-parchment-300">✕</button>
       </div>
       <div class="flex-1 overflow-y-auto p-5 space-y-1" id="wishlistItemsContainer"></div>
       <div class="p-5 bg-ink-950 border-t border-gold-500/25">
-        <button onclick="openBanquetScrollModal()" class="w-full py-3 rounded-xl bg-gradient-to-r from-cinnabar-600 to-gold-600 text-parchment-100 font-bold text-sm tracking-widest shadow-md">生成雅集席单确认</button>
+        <button onclick="openBanquetScrollModal()" class="w-full py-3 rounded-xl bg-gradient-to-r from-cinnabar-600 to-gold-600 text-parchment-100 font-bold text-sm tracking-widest shadow-md" id="ui-drawer-btn">生成雅集席单确认</button>
       </div>
     </div>
   </div>
 
-  <!-- Waiter Card Modal (洒金笺席单) -->
+  <!-- 洒金笺席单 Modal (无价格版，强化备注) -->
   <div id="waiterCardModal" onclick="if(event.target === this) closeWaiterCardModal()" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-md">
     <div class="relative w-full max-w-md max-h-[95vh] overflow-y-auto rounded-2xl p-1.5 bg-gradient-to-b from-gold-400/80 via-gold-600/50 to-gold-400/80 shadow-2xl no-scrollbar">
       
       <div id="sajinPaperSurface" class="relative rounded-xl p-6 sm:p-8 text-[#221D17]"
            style="background-color: #F4EFE6; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Ccircle cx=%2220%22 cy=%2230%22 r=%221%22 fill=%22%23C8A265%22 opacity=%220.5%22/%3E%3Ccircle cx=%2270%22 cy=%2280%22 r=%221.5%22 fill=%22%239E7B42%22 opacity=%220.4%22/%3E%3Ccircle cx=%2240%22 cy=%2250%22 r=%220.8%22 fill=%22%23C8A265%22 opacity=%220.6%22/%3E%3C/svg%3E'); background-size: 150px 150px;">
-        <div class="border-[1.5px] border-[#8C6D3F]/50 p-2 rounded-lg">
-          <div class="border-[1.5px] border-[#8C6D3F]/30 p-4 sm:p-5 rounded relative bg-transparent">
-            <button data-html2canvas-ignore="true" onclick="closeWaiterCardModal()" class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-[#EAE2D3] border border-[#8C6D3F]/50 flex items-center justify-center text-sm shadow-md text-[#5C4D3C] hover:bg-white z-10">✕</button>
-            
-            <div class="text-center space-y-2 border-b-[1.5px] border-[#8C6D3F]/30 pb-4">
-              <div class="inline-block seal-stamp px-2.5 py-0.5 text-[10px] rounded-sm mb-1 leading-normal">雅集珍席</div>
-              <h3 class="text-2xl font-bold tracking-[0.2em] text-[#1A1612] leading-normal py-1">东方雅集席单</h3>
-              <div class="text-[9px] tracking-[0.25em] text-[#705528] uppercase">Oriental Private Banquet</div>
+        <div class="border-[1.5px] border-[#8C6D3F]/50 p-4 sm:p-5 rounded-lg relative bg-transparent">
+          
+          <button data-html2canvas-ignore="true" onclick="closeWaiterCardModal()" class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-[#EAE2D3] border border-[#8C6D3F]/50 flex items-center justify-center text-sm shadow-md text-[#5C4D3C] hover:bg-white z-10">✕</button>
+          
+          <div class="text-center space-y-2 border-b-[1.5px] border-[#8C6D3F]/30 pb-4">
+            <div class="inline-block seal-stamp px-2.5 py-0.5 text-[10px] rounded-sm mb-1 leading-normal" id="card-tag">雅集珍席</div>
+            <h3 class="text-2xl font-bold tracking-[0.2em] text-[#1A1612] leading-normal py-1" id="card-title">云起·东方雅集席单</h3>
+            <div class="text-[9px] tracking-[0.25em] text-[#705528] uppercase">YUNQI PRIVATE TEA & BANQUET SCROLL</div>
+          </div>
+          
+          <div class="bg-[#EAE2D3]/70 border border-[#8C6D3F]/25 rounded-lg p-3 grid grid-cols-3 gap-2 text-center my-4">
+            <div class="min-w-0"><div class="text-[10px] text-[#705528] mb-1" id="card-lbl-room">【 私享茶寮 】</div><div id="cardRoomValue" class="text-xs font-bold text-[#1A1612] break-words leading-relaxed"></div></div>
+            <div class="min-w-0 border-x border-[#8C6D3F]/20"><div class="text-[10px] text-[#705528] mb-1" id="card-lbl-time">【 雅集时辰 】</div><div id="cardTimeValue" class="text-xs font-bold text-[#1A1612] break-words leading-relaxed"></div></div>
+            <div class="min-w-0"><div class="text-[10px] text-[#705528] mb-1" id="card-lbl-guest">【 入席宾客 】</div><div id="cardGuestsValue" class="text-sm font-bold text-[#9B2C20] leading-relaxed"></div></div>
+          </div>
+          
+          <div class="space-y-1">
+            <div class="flex items-center justify-between text-[11px] text-[#705528] border-b border-[#8C6D3F]/25 pb-2 font-medium tracking-wider">
+              <span id="card-lbl-items">入席珍馐与岩茶</span><span id="card-lbl-qty">点单份数</span>
             </div>
-            
-            <div class="bg-[#EAE2D3]/70 border border-[#8C6D3F]/25 rounded-lg p-3 grid grid-cols-3 gap-2 text-center my-4">
-              <div class="min-w-0"><div class="text-[10px] text-[#705528] mb-1">私享茶寮</div><div id="cardRoomValue" class="text-xs font-bold text-[#1A1612] break-words leading-relaxed"></div></div>
-              <div class="min-w-0 border-x border-[#8C6D3F]/20"><div class="text-[10px] text-[#705528] mb-1">雅集时辰</div><div id="cardTimeValue" class="text-xs font-bold text-[#1A1612] break-words leading-relaxed"></div></div>
-              <div class="min-w-0"><div class="text-[10px] text-[#705528] mb-1">入席宾客</div><div id="cardGuestsValue" class="text-sm font-bold text-[#9B2C20] leading-relaxed"></div></div>
+            <div id="waiterCardItems" class="divide-y divide-[#8C6D3F]/15 py-1"></div>
+          </div>
+          
+          <!-- 醒目的席间雅嘱备注区 -->
+          <div class="mt-5 pt-4 border-t-[1.5px] border-dashed border-[#8C6D3F]/40 bg-[#EAE2D3]/40 rounded-b-lg -mx-2 px-3 pb-3">
+            <div class="text-[11px] text-[#705528] mb-2 font-semibold tracking-widest text-center" id="card-lbl-note">✿ 席 间 雅 嘱 / 偏 好 备 注 ✿</div>
+            <div id="cardNoteValue" class="text-[13px] text-[#9B2C20] font-bold leading-relaxed text-center min-h-[2rem]"></div>
+          </div>
+          
+          <div class="pt-4 mt-2 flex items-center justify-between border-t border-[#8C6D3F]/20">
+            <div class="text-left">
+              <div data-html2canvas-ignore="true" class="text-[10px] text-[#5C4D3C] tracking-wide" id="card-footer">出示给管家或保存为图片</div>
+              <div id="cardDateStamp" class="text-[9px] text-[#8C6D3F] mt-1 tracking-widest uppercase"></div>
             </div>
-            
-            <div class="space-y-1">
-              <div class="flex items-center justify-between text-[11px] text-[#705528] border-b border-[#8C6D3F]/25 pb-2 font-medium tracking-wider">
-                <span>入席珍馐与岩茶</span><span>点单份数</span>
-              </div>
-              <div id="waiterCardItems" class="divide-y divide-[#8C6D3F]/15 py-1"></div>
-            </div>
-            
-            <!-- 强化显示的备注区域 -->
-            <div class="mt-4 pt-4 border-t-[1.5px] border-[#8C6D3F]/30">
-              <div class="text-[11px] text-[#705528] mb-1.5 font-medium tracking-widest">【 席间雅嘱 / 偏好备注 】</div>
-              <div id="cardNoteValue" class="text-sm text-[#9B2C20] font-bold leading-relaxed min-h-[2rem]">无特殊嘱托</div>
-            </div>
-            
-            <div class="pt-4 mt-2 flex items-center justify-between">
-              <div class="text-left">
-                <div data-html2canvas-ignore="true" class="text-[10px] text-[#5C4D3C] tracking-wide">出示给管家或保存为图片</div>
-                <div id="cardDateStamp" class="text-[9px] text-[#8C6D3F] mt-1 tracking-widest uppercase"></div>
-              </div>
-              <div class="seal-stamp opacity-40 scale-75 transform origin-bottom-right rotate-[-15deg]">云起</div>
-            </div>
+            <div class="seal-stamp opacity-40 scale-75 transform origin-bottom-right rotate-[-15deg]">云起</div>
           </div>
         </div>
       </div>
-      <div data-html2canvas-ignore="true" class="mt-3">
-        <button onclick="saveBanquetScrollAsImage()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#8C6D3F] to-[#705528] text-[#F7F4EE] font-bold text-sm tracking-widest shadow-lg hover:shadow-xl transition">保存高清席单图片</button>
+      <div data-html2canvas-ignore="true" class="mt-4">
+        <button onclick="saveBanquetScrollAsImage()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#8C6D3F] to-[#705528] text-[#F7F4EE] font-bold text-sm tracking-widest shadow-lg hover:shadow-xl transition flex justify-center items-center gap-2" id="ui-btn-saveimg">
+          <span>保存席单为高清图片</span>
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- Password Modal -->
+  <!-- 掌席密码 Modal (无明文提示) -->
   <div id="passwordModal" onclick="if(event.target === this) closePasswordModal()" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/85 backdrop-blur-md">
     <div class="w-full max-w-sm bg-ink-900 border border-gold-500/40 rounded-2xl p-6 text-center space-y-5 shadow-2xl">
-      <div class="inline-block seal-stamp px-2 py-0.5 text-[10px] rounded-sm">掌席认证</div>
-      <h4 class="text-base font-medium text-gold-300 tracking-widest">请输入掌席密码</h4>
-      <input type="password" id="curatorPasswordInput" placeholder="请输入密码" class="w-full bg-ink-950 border border-gold-500/30 rounded-lg px-4 py-3 text-center text-parchment-100 focus:outline-none focus:border-gold-400 tracking-widest" />
+      <div class="inline-block seal-stamp px-2 py-0.5 text-[10px] rounded-sm">权限校验</div>
+      <h4 class="text-base font-medium text-gold-300 tracking-widest">掌席模式需验证</h4>
+      <input type="password" id="curatorPasswordInput" placeholder="" class="w-full bg-ink-950 border border-gold-500/30 rounded-lg px-4 py-3 text-center text-parchment-100 focus:outline-none focus:border-gold-400 tracking-widest" />
       <div class="flex items-center gap-3 pt-2">
-        <button onclick="closePasswordModal()" class="flex-1 py-2.5 rounded-xl bg-ink-800 text-parchment-300 text-sm tracking-wider">取消</button>
-        <button onclick="verifyPassword()" class="flex-1 py-2.5 rounded-xl bg-gold-500 text-ink-950 text-sm font-bold tracking-wider">确认开启</button>
+        <button onclick="closePasswordModal()" class="flex-1 py-2.5 rounded-xl bg-ink-800 text-parchment-300 text-sm tracking-wider hover:bg-ink-700">取消</button>
+        <button onclick="verifyPassword()" class="flex-1 py-2.5 rounded-xl bg-gold-500 text-ink-950 text-sm font-bold tracking-wider hover:bg-gold-400">确认开启</button>
       </div>
     </div>
   </div>
 
-  <!-- Toast -->
+  <!-- 掌席音乐修改 Modal -->
+  <div id="musicEditModal" onclick="if(event.target === this) closeMusicEditModal()" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+    <div class="w-full max-w-md bg-ink-900 border border-gold-500/40 rounded-2xl p-6 space-y-4 shadow-2xl">
+      <h4 class="text-base font-medium text-gold-300 tracking-widest border-b border-gold-500/20 pb-3">修改背景音乐 (MP3)</h4>
+      <textarea id="musicUrlInput" rows="3" placeholder="https://..." class="w-full bg-ink-950 border border-gold-500/30 rounded-lg px-4 py-3 text-sm text-parchment-100 focus:outline-none focus:border-gold-400"></textarea>
+      <div class="flex items-center gap-3 pt-2">
+        <button onclick="closeMusicEditModal()" class="flex-1 py-2.5 rounded-xl bg-ink-800 text-parchment-300 text-sm tracking-wider">取消</button>
+        <button onclick="saveMusicUrl()" class="flex-1 py-2.5 rounded-xl bg-gold-500 text-ink-950 text-sm font-bold tracking-wider">保存设置</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 掌席相册编辑 Modal (支持多图与上下架) -->
+  <div id="curatorEditModal" onclick="if(event.target === this) closeCuratorEditModal()" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+    <div class="w-full max-w-md bg-ink-900 border border-gold-500/40 rounded-2xl p-6 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-gold-500/20 pb-3">
+        <h4 class="text-base font-medium text-gold-300 tracking-widest">编辑相册画作</h4>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" id="editItemVisible" class="w-4 h-4 accent-gold-500" />
+          <span class="text-xs text-parchment-300">上架展示</span>
+        </label>
+      </div>
+      <input type="hidden" id="editItemId" />
+      
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs text-gold-400 mb-1">图片链接 (支持多图轮播，每行粘贴一条URL)</label>
+          <textarea id="editItemImages" rows="3" class="w-full bg-ink-950 border border-gold-500/30 rounded-lg px-3 py-2 text-sm text-parchment-100 focus:outline-none focus:border-gold-400" placeholder="https://image1.jpg&#10;https://image2.jpg"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-gold-400 mb-1">中文名称</label>
+            <input type="text" id="editItemNameZh" class="w-full bg-ink-950 border border-gold-500/30 rounded-lg px-3 py-2 text-sm text-parchment-100 focus:outline-none focus:border-gold-400" />
+          </div>
+          <div>
+            <label class="block text-xs text-gold-400 mb-1">English Name</label>
+            <input type="text" id="editItemNameEn" class="w-full bg-ink-950 border border-gold-500/30 rounded-lg px-3 py-2 text-sm text-parchment-100 focus:outline-none focus:border-gold-400" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs text-gold-400 mb-1">角标印章 / Badge</label>
+          <div class="flex gap-2">
+            <input type="text" id="editItemBadgeZh" placeholder="中文" class="w-1/2 bg-ink-950 border border-gold-500/30 rounded-lg px-3 py-2 text-sm text-parchment-100" />
+            <input type="text" id="editItemBadgeEn" placeholder="EN" class="w-1/2 bg-ink-950 border border-gold-500/30 rounded-lg px-3 py-2 text-sm text-parchment-100" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs text-gold-400 mb-1">中文溯源长文</label>
+          <textarea id="editItemStoryZh" rows="2" class="w-full bg-ink-950 border border-gold-500/30 rounded-lg px-3 py-2 text-sm text-parchment-100"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs text-gold-400 mb-1">English Story</label>
+          <textarea id="editItemStoryEn" rows="2" class="w-full bg-ink-950 border border-gold-500/30 rounded-lg px-3 py-2 text-sm text-parchment-100"></textarea>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 pt-4 border-t border-gold-500/20">
+        <button onclick="closeCuratorEditModal()" class="flex-1 py-2.5 rounded-xl bg-ink-800 text-parchment-300 text-sm tracking-wider">取消</button>
+        <button onclick="saveCuratorEdit()" class="flex-1 py-2.5 rounded-xl bg-gold-500 text-ink-950 text-sm font-bold tracking-wider">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast 提示 -->
   <div id="toastBox" class="fixed top-20 left-1/2 -translate-x-1/2 z-[60] pointer-events-none opacity-0 transition-all duration-300 transform -translate-y-4">
     <div class="px-4 py-2 rounded-full bg-ink-900/95 border border-gold-500/60 text-gold-300 text-xs sm:text-sm shadow-2xl flex items-center gap-2 backdrop-blur-md">
       <span class="w-1.5 h-1.5 rounded-full bg-gold-400"></span><span id="toastMessage" class="tracking-wider"></span>
@@ -368,116 +406,188 @@
   </div>
 
   <script>
-    const INITIAL_MENU_ITEMS = [
-      { id: 'dish-1', category: 'minhai', nameZh: '闽南传统姜母鸭', unitZh: '煲', badgeZh: '非遗古法', tagsZh: ['陈年老姜', '慢焗'], oneLinerZh: '正番鸭佐纯黑麻油文火慢焗。', storyZh: '精选漳州三年陈老姜与正番鸭，全程不加一滴水，古法慢焗，香气四溢。', images/1.jpg },
-      { id: 'dish-2', category: 'quanyun', nameZh: '安海土笋冻', unitZh: '例', badgeZh: '天然胶原', tagsZh: ['滩涂鲜物', '冰爽'], oneLinerZh: '安海鲜活沙虫熬煮成冻，晶莹脆嫩。', storyZh: '泉州传承百年的海洋奇珍，天然胶质凝结如玉，佐以特制酱汁，鲜冷爽口。', images/2.jpg },
-      { id: 'dish-3', category: 'huoxiang', nameZh: '脆皮牛小排', unitZh: '例', badgeZh: '中西合璧', tagsZh: ['雪花丰腴', '陈皮'], oneLinerZh: '东方香料慢卤后高温脆皮锁汁。', storyZh: '雪花牛肉经新会陈皮慢炖后猛火脆煎，外酥里嫩，肉汁在口腔中完美释放。', images/3.jpg },
-      { id: 'dish-4', category: 'dingdun', nameZh: '迷你火瞳翅', unitZh: '位', badgeZh: '古法浓汤', tagsZh: ['金华火腿', '慢炖'], oneLinerZh: '三年火瞳与老母鸡精炖八小时。', storyZh: '取金华火腿最饱满的部位隔水慢炖，汤色金黄粘唇，每一口都是时间沉淀的醇厚。',images/4.jpg },
-      { id: 'dish-5', category: 'huoxiang', nameZh: '芝士金汤焗小青龙', unitZh: '只', badgeZh: '创新海味', tagsZh: ['深海鲜活', '奶香'], oneLinerZh: '小青龙佐以醇厚芝士与南瓜金汤焗烤。', storyZh: '西式芝士与中式高汤的完美融合，龙虾肉质Q弹鲜甜，金汤浓郁回味无穷。', images/6.jpg },
-      { id: 'dish-6', category: 'dingdun', nameZh: '30年老熟地糕蟹老鸭汤', unitZh: '煲', badgeZh: '闽南药膳', tagsZh: ['九蒸九晒', '滋阴'], oneLinerZh: '老熟地与爆膏红鲟同煲，汤黑甘甜。', storyZh: '三十年老熟地搭配鲜活糕蟹与老鸭，药膳同源之极品，汤色深沉而入口甘甜入魂。', images/5.jpg }
+    // ==========================================
+    // 默认陶笛/尺八禅意轻音乐
+    // ==========================================
+    // 采用 Pixabay 公版静谧自然陶笛曲
+    const DEFAULT_MUSIC_URL = 'https://cdn.pixabay.com/audio/2021/11/17/audio_0cb0d7eb59.mp3';
+
+    // ==========================================
+    // 默认高质感菜品数据 (支持多图轮播 images 数组)
+    // ==========================================
+    const DEFAULT_MENU_ITEMS = [
+      { id: 'dish-1', category: 'minhai', 
+        nameZh: '闽南传统姜母鸭', nameEn: 'Minnan Ginger Duck', 
+        badgeZh: '非遗古法', badgeEn: 'Heritage', 
+        storyZh: '精选漳州三年陈老姜与正番鸭，全程不加一滴水，古法慢焗，香气四溢，暖胃更暖心。', 
+        storyEn: 'Selected 3-year-old ginger and Muscovy duck, slow-cooked in traditional clay pot.', 
+        images: ['https://images.unsplash.com/photo-1518492104633-130d0cc84637?auto=format&fit=crop&w=900&q=80', 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=900&q=80'],
+        visible: true },
+      { id: 'dish-2', category: 'quanyun', 
+        nameZh: '安海土笋冻', nameEn: 'Anhai Sipunculid Jelly', 
+        badgeZh: '天然胶原', badgeEn: 'Collagen', 
+        storyZh: '泉州传承百年的海洋奇珍，天然胶质凝结如玉，佐以特制酱汁，鲜冷爽口。', 
+        storyEn: 'A centenary ocean treasure from Quanzhou, naturally coagulated with fresh collagen.', 
+        images: ['https://images.unsplash.com/photo-1534080564583-6be75777b70a?auto=format&fit=crop&w=900&q=80'],
+        visible: true },
+      { id: 'dish-3', category: 'huoxiang', 
+        nameZh: '脆皮牛小排', nameEn: 'Crispy Beef Short Ribs', 
+        badgeZh: '中西合璧', badgeEn: 'Fusion', 
+        storyZh: '雪花牛肉经新会陈皮慢炖后猛火脆煎，外酥里嫩，肉汁在口腔中完美释放。', 
+        storyEn: 'Marbled beef slow-stewed with aged tangerine peel then pan-fried to crispy perfection.', 
+        images: ['https://images.unsplash.com/photo-1544025162-811114cd3543?auto=format&fit=crop&w=900&q=80'],
+        visible: true },
+      { id: 'dish-4', category: 'dingdun', 
+        nameZh: '迷你火瞳翅', nameEn: 'Mini Shark Fin Soup', 
+        badgeZh: '古法浓汤', badgeEn: 'Rich Broth', 
+        storyZh: '取金华火腿最饱满的部位隔水慢炖，汤色金黄粘唇，每一口都是时间沉淀的醇厚。', 
+        storyEn: 'Slow-stewed with premium Jinhua ham, producing a golden, lip-smacking rich broth.', 
+        images: ['https://images.unsplash.com/photo-1548943487-a2e4f43b485f?auto=format&fit=crop&w=900&q=80'],
+        visible: true },
+      { id: 'dish-5', category: 'huoxiang', 
+        nameZh: '芝士金汤焗小青龙', nameEn: 'Cheese Baked Lobster in Golden Broth', 
+        badgeZh: '创新海味', badgeEn: 'Seafood', 
+        storyZh: '西式芝士与中式高汤的完美融合，小青龙肉质Q弹鲜甜，金汤浓郁回味无穷。', 
+        storyEn: 'Perfect fusion of western cheese and Chinese golden broth with fresh bouncy lobster.', 
+        images: ['https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=900&q=80', 'https://images.unsplash.com/photo-1599084924616-e91011ac0e31?auto=format&fit=crop&w=900&q=80'],
+        visible: true },
+      { id: 'dish-6', category: 'dingdun', 
+        nameZh: '30年老熟地糕蟹老鸭汤', nameEn: '30-yr Rehmannia Crab Duck Soup', 
+        badgeZh: '闽南药膳', badgeEn: 'Herbal Soup', 
+        storyZh: '三十年老熟地搭配鲜活糕蟹与老鸭，药膳同源之极品，汤色深沉而入口甘甜入魂。', 
+        storyEn: 'A supreme herbal blend of 30-year old rehmannia root, fresh roe crab, and old duck.', 
+        images: ['https://images.unsplash.com/photo-1541518763669-27fef04b14ea?auto=format&fit=crop&w=900&q=80'],
+        visible: true }
     ];
 
     const CATEGORIES = [
-      { id: 'all', nameZh: '全部雅馔' }, { id: 'minhai', nameZh: '闽海主肴' }, { id: 'huoxiang', nameZh: '镬香热馔' },
-      { id: 'quanyun', nameZh: '泉韵主膳' }, { id: 'qingshu', nameZh: '清蔬臻味' }, { id: 'dingdun', nameZh: '鼎炖位汤' }, { id: 'ganyun', nameZh: '甘韵甜珍' }
+      { id: 'all', nameZh: '全部雅馔', nameEn: 'All Delicacies' }, { id: 'minhai', nameZh: '闽海主肴', nameEn: 'Minnan Mains' }, 
+      { id: 'huoxiang', nameZh: '镬香热馔', nameEn: 'Wok-fried' }, { id: 'quanyun', nameZh: '泉韵主膳', nameEn: 'Quanzhou Flavour' }, 
+      { id: 'qingshu', nameZh: '清蔬臻味', nameEn: 'Vegetables' }, { id: 'dingdun', nameZh: '鼎炖位汤', nameEn: 'Premium Soups' }, 
+      { id: 'ganyun', nameZh: '甘韵甜珍', nameEn: 'Desserts' }
     ];
 
     const PAVILIONS = [
-      { id: '临水听竹轩', nameZh: '临水听竹轩 (宜2-6位)' }, { id: '红砖古厝阁', nameZh: '红砖古厝阁 (宜6-10位)' }, { id: '幽篁松风寮', nameZh: '幽篁松风寮 (宜8-12位)' }
+      { id: '临水听竹轩', nameZh: '临水听竹轩 (宜2-6位)', nameEn: 'Bamboo Waterside Pavilion (2-6 Pax)' }, 
+      { id: '红砖古厝阁', nameZh: '红砖古厝阁 (宜6-10位)', nameEn: 'Red Brick Mansion (6-10 Pax)' }, 
+      { id: '幽篁松风寮', nameZh: '幽篁松风寮 (宜8-12位)', nameEn: 'Pine Breeze Hut (8-12 Pax)' }
     ];
+    
     const TIME_SLOTS = [
-      { id: '午席 · 未时', labelZh: '午席 · 未时' }, { id: '申时茶叙 · 申时', labelZh: '申时茶叙 · 申时' }, { id: '晚宴 · 戌时', labelZh: '晚宴 · 戌时' }, { id: '夜阑茗谈 · 亥时', labelZh: '夜阑茗谈 · 亥时' }
+      { id: '午席 · 未时', labelZh: '午席 · 未时', labelEn: 'Lunch · Wei Shi' }, 
+      { id: '申时茶叙 · 申时', labelZh: '申时茶叙 · 申时', labelEn: 'Afternoon Tea · Shen Shi' }, 
+      { id: '晚宴 · 戌时', labelZh: '晚宴 · 戌时', labelEn: 'Dinner · Xu Shi' }, 
+      { id: '夜阑茗谈 · 亥时', labelZh: '夜阑茗谈 · 亥时', labelEn: 'Late Night Talk · Hai Shi' }
     ];
 
-    let MENU_ITEMS = [...INITIAL_MENU_ITEMS];
+    // 全局状态
+    let MENU_ITEMS = [];
     let state = {
-      activeCategory: 'all', mobileCols: 2, curatorMode: false,
-      activeItem: null, diners: 4, tableRoom: '临水听竹轩', timeSlot: '晚宴 · 戌时', banquetNote: '',
-      wishlist: []
+      lang: 'zh', // 'zh' or 'en'
+      activeCategory: 'all', 
+      curatorMode: false,
+      activeItem: null, 
+      diners: 4, 
+      tableRoom: '临水听竹轩', 
+      timeSlot: '晚宴 · 戌时', 
+      banquetNote: '',
+      wishlist: [],
+      musicUrl: '',
+      currentImgs: [],
+      currentImgIndex: 0
     };
 
+    // 翻译辅助函数
+    const t = (zh, en) => state.lang === 'zh' ? zh : en;
+
     // ==========================================
-    // 雅音合成器 (提升频率，保证手机外放清晰)
+    // 生命周期与数据初始化
     // ==========================================
-    let audioCtx, masterGain, windNoise, droneOsc1, droneOsc2;
-    let isAudioPlaying = false;
-
-    function initAudio() {
-      if(audioCtx) return;
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      masterGain = audioCtx.createGain();
-      masterGain.gain.value = 0;
-      masterGain.connect(audioCtx.destination);
-
-
-      // 2. 东方古琴/颂钵泛音 (正弦波叠加)
-      droneOsc1 = audioCtx.createOscillator();
-      droneOsc1.type = 'sine';
-      droneOsc1.frequency.value = 432; // 432Hz 治愈频率
-
-      droneOsc2 = audioCtx.createOscillator();
-      droneOsc2.type = 'sine';
-      droneOsc2.frequency.value = 648; // 纯五度泛音
-
-      const droneGain = audioCtx.createGain();
-      droneGain.gain.value = 0.2; // 提高泛音音量
-
-      droneOsc1.connect(droneGain);
-      droneOsc2.connect(droneGain);
-      droneGain.connect(masterGain);
-
-      windNoise.start();
-      droneOsc1.start();
-      droneOsc2.start();
-    }
-
-    function toggleMusic() {
-      if (!audioCtx) initAudio();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      
-      const btn = document.getElementById('musicBtn');
-      const icon = document.getElementById('musicIcon');
-      
-      if (isAudioPlaying) {
-        masterGain.gain.setTargetAtTime(0, audioCtx.currentTime, 1); 
-        isAudioPlaying = false;
-        btn.classList.remove('music-playing', 'text-gold-400');
-        btn.classList.add('text-gold-300');
-        icon.textContent = '🔇';
-      } else {
-        masterGain.gain.setTargetAtTime(1.0, audioCtx.currentTime, 2); 
-        isAudioPlaying = true;
-        btn.classList.add('music-playing', 'text-gold-400');
-        btn.classList.remove('text-gold-300');
-        icon.textContent = '🎵';
-        showToast('雅音已开启');
-      }
-    }
-
-    // 首次交互自动播放音乐
-    document.body.addEventListener('click', () => {
-      if (!audioCtx && !isAudioPlaying) {
-        initAudio();
-        toggleMusic(); // 首次点击自动淡入
-      } else if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-    }, { once: true });
-
-
     window.addEventListener('DOMContentLoaded', () => {
-      initAmbientMistCanvas();
+      const savedMenu = localStorage.getItem('yunqi_menu_data');
+      MENU_ITEMS = savedMenu ? JSON.parse(savedMenu) : [...DEFAULT_MENU_ITEMS];
+      state.musicUrl = localStorage.getItem('yunqi_music_url') || DEFAULT_MUSIC_URL;
       
-      const savedWishlist = localStorage.getItem('yunqi_wishlist');
-      if(savedWishlist) {
-        state.wishlist = JSON.parse(savedWishlist);
-      } else {
-        state.wishlist = []; // 初始必定清空
-      }
+      // 保证旧数据兼容新的 images 数组
+      MENU_ITEMS.forEach(m => {
+        if(m.image && !m.images) { m.images = [m.image]; delete m.image; }
+        if(m.visible === undefined) m.visible = true;
+      });
+
+      state.wishlist = []; // 每次打开强制清空心愿单
+      
+      initAudioPlayer();
       renderAll();
     });
 
+    function saveMenuData() { localStorage.setItem('yunqi_menu_data', JSON.stringify(MENU_ITEMS)); }
+
+    function clearMenuData() {
+      MENU_ITEMS = [...DEFAULT_MENU_ITEMS];
+      state.musicUrl = DEFAULT_MUSIC_URL;
+      localStorage.removeItem('yunqi_menu_data');
+      localStorage.removeItem('yunqi_music_url');
+      state.wishlist = [];
+      showToast(t('已恢复默认数据', 'Default data restored'));
+      if(isAudioPlaying) { audioPlayer.src = state.musicUrl; audioPlayer.play(); }
+      renderAll();
+    }
+
+    // ==========================================
+    // 语言与文案更新机制
+    // ==========================================
+    function toggleLang() {
+      state.lang = state.lang === 'zh' ? 'en' : 'zh';
+      renderAll();
+    }
+
+    function updateStaticUITexts() {
+      document.getElementById('ui-tag-yaji').textContent = t('雅集', 'Yaji');
+      document.getElementById('brandTitle').textContent = t('云起·闽宴茶事', 'Yunqi Fine Dining');
+      document.getElementById('ui-btn-music').textContent = t('雅音', 'Music');
+      document.getElementById('ui-btn-curator').textContent = t('掌席模式', 'Curator');
+      document.getElementById('ui-tag-curatormode').textContent = t('掌席模式', 'Curator Mode');
+      document.getElementById('ui-text-curatorhint').textContent = t('点击任意相册图片即可修改资料', 'Click any image to edit data');
+      document.getElementById('ui-btn-editmusic').textContent = t('🎵 修改音乐', '🎵 Edit Music');
+      document.getElementById('ui-btn-reset').textContent = t('恢复默认', 'Reset');
+      document.getElementById('ui-btn-exitcurator').textContent = t('退出掌席', 'Exit');
+      document.getElementById('ui-text-slogan').textContent = t('山 海 入 馔 · 寻 味 溯 源', 'MOUNTAINS AND SEAS ON A PLATE');
+      
+      document.getElementById('ui-tag-custom').textContent = t('定制', 'Custom');
+      document.getElementById('ui-title-custom').textContent = t('席位雅集定制卷', 'Banquet Customization Scroll');
+      document.getElementById('ui-label-guests').textContent = t('一、入席人数', 'I. Number of Guests');
+      document.getElementById('ui-label-time').textContent = t('二、雅集时辰', 'II. Time Slot');
+      document.getElementById('ui-label-room').textContent = t('三、私享茶寮', 'III. Private Pavilion');
+      document.getElementById('ui-label-note').textContent = t('四、席间雅嘱 / 偏好备注', 'IV. Dietary Notes / Preferences');
+      document.getElementById('dockBanquetNote').placeholder = t('例：少油免辣、孕妇忌口、寿宴布置...', 'E.g. Less oil, no spicy, birthday setup...');
+      
+      document.getElementById('ui-text-wishlist').textContent = t('我的点单备忘', 'My Wishlist');
+      document.getElementById('mobileExpandArrow').textContent = document.getElementById('dockExpandPanel').classList.contains('hidden') ? t('展卷 ▲', 'Expand ▲') : t('收卷 ▼', 'Collapse ▼');
+      document.getElementById('ui-btn-generate').textContent = t('生成席单', 'Create Scroll');
+      
+      document.getElementById('ui-label-story').textContent = t('背 景 溯 源', 'BACKGROUND STORY');
+      document.getElementById('ui-btn-add').textContent = t('加入备忘', 'Add to Wishlist');
+      document.getElementById('ui-drawer-title').textContent = t('点 单 备 忘', 'WISHLIST');
+      document.getElementById('ui-drawer-btn').textContent = t('生成雅集席单确认', 'Confirm & Generate Scroll');
+      
+      // 席单内部翻译
+      document.getElementById('card-tag').textContent = t('雅集珍席', 'Yaji Banquet');
+      document.getElementById('card-title').textContent = t('云起·东方雅集席单', 'Yunqi Oriental Banquet Scroll');
+      document.getElementById('card-lbl-room').textContent = t('【 私享茶寮 】', '[ Pavilion ]');
+      document.getElementById('card-lbl-time').textContent = t('【 雅集时辰 】', '[ Time ]');
+      document.getElementById('card-lbl-guest').textContent = t('【 入席宾客 】', '[ Guests ]');
+      document.getElementById('card-lbl-items').textContent = t('入席珍馐与岩茶', 'Delicacies & Tea');
+      document.getElementById('card-lbl-qty').textContent = t('点单份数', 'Qty');
+      document.getElementById('card-lbl-note').textContent = t('✿ 席 间 雅 嘱 / 偏 好 备 注 ✿', '✿ DIETARY NOTES & PREFERENCES ✿');
+      document.getElementById('card-footer').textContent = t('出示给管家或保存为图片', 'Show to Butler or Save Image');
+      document.getElementById('ui-btn-saveimg').innerHTML = `<span>${t('保存席单为高清图片', 'Save Scroll as Image')}</span>`;
+    }
+
+    // ==========================================
+    // 渲染系统
+    // ==========================================
     function renderAll() {
+      updateStaticUITexts();
       renderCategories();
       renderMenuGrid();
       renderDockCustomizationPanel();
@@ -487,72 +597,129 @@
     function renderCategories() {
       document.getElementById('categoryTabs').innerHTML = CATEGORIES.map(cat => {
         const isActive = state.activeCategory === cat.id;
-        const count = cat.id === 'all' ? MENU_ITEMS.length : MENU_ITEMS.filter(i => i.category === cat.id).length;
-        return `<button onclick="selectCategory('${cat.id}')" class="shrink-0 px-4 py-2 rounded-full text-sm font-medium tracking-widest transition-all ${isActive ? 'cat-btn-active scale-105' : 'bg-ink-950 border border-gold-500/20 text-parchment-300 hover:text-gold-300'}">${cat.nameZh} (${count})</button>`;
+        const count = cat.id === 'all' 
+          ? MENU_ITEMS.filter(i=>state.curatorMode || i.visible).length 
+          : MENU_ITEMS.filter(i => (state.curatorMode || i.visible) && i.category === cat.id).length;
+        const catName = t(cat.nameZh, cat.nameEn);
+        return `<button onclick="selectCategory('${cat.id}')" class="shrink-0 px-4 py-2 rounded-full text-sm font-medium tracking-widest transition-all ${isActive ? 'bg-gradient-to-r from-gold-500 to-gold-400 text-ink-950 scale-105 shadow-md' : 'bg-ink-950 border border-gold-500/20 text-parchment-300 hover:text-gold-300'}">${catName} (${count})</button>`;
       }).join('');
     }
     function selectCategory(catId) { state.activeCategory = catId; renderAll(); }
     
-    function toggleMobileGridCols() { 
-      state.mobileCols = state.mobileCols === 1 ? 2 : 1; 
-      document.getElementById('menuGrid').className = `grid gap-6 sm:gap-8 ${state.mobileCols === 2 ? 'grid-cols-2' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`; 
-      document.getElementById('mobileColText').textContent = state.mobileCols === 1 ? '画册' : '双列'; 
-    }
-
+    // 渲染小图相册
     function renderMenuGrid() {
-      const filtered = MENU_ITEMS.filter(item => state.activeCategory === 'all' || item.category === state.activeCategory);
+      const filtered = MENU_ITEMS.filter(item => {
+        if (!state.curatorMode && !item.visible) return false;
+        return state.activeCategory === 'all' || item.category === state.activeCategory;
+      });
+      
       document.getElementById('menuGrid').innerHTML = filtered.map(item => {
         const qty = state.wishlist.find(w => w.itemId === item.id)?.qty || 0;
-        // 相册卡片设计：更大的画幅、沉浸的文字叠层
+        const coverImg = (item.images && item.images.length > 0) ? item.images[0] : '';
+        const name = t(item.nameZh, item.nameEn);
+        const badge = t(item.badgeZh, item.badgeEn);
+        
         return `
-          <article class="oriental-card animate-card-enter rounded-2xl overflow-hidden cursor-pointer flex flex-col relative group" onclick="openDetailModal('${item.id}')">
-            <div class="relative w-full aspect-square bg-ink-950">
-              <img src="${item.image}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <!-- 顶部暗角与标签 -->
-              <div class="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/70 to-transparent pointer-events-none"></div>
-              <div class="absolute top-3 left-3 z-10 seal-stamp px-2 py-0.5 text-[10px] rounded-sm">${item.badgeZh}</div>
-              
-              <!-- 底部暗角与文字 -->
-              <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/90 via-black/50 to-transparent pointer-events-none"></div>
-              <div class="absolute bottom-0 left-0 right-0 p-4 z-10">
-                <h3 class="text-lg font-semibold text-gold-300 tracking-wider drop-shadow-md">${item.nameZh}</h3>
-                <p class="text-xs text-parchment-200 mt-1 line-clamp-1 font-light opacity-80">${item.oneLinerZh}</p>
-              </div>
+          <article class="gallery-card relative rounded-xl overflow-hidden cursor-pointer group bg-ink-950 border border-gold-500/20 shadow-lg aspect-square ${!item.visible?'opacity-50 grayscale':''}" onclick="handleCardClick('${item.id}')">
+            <img src="${coverImg}" class="w-full h-full object-cover transition-transform duration-700" />
+            <div class="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/80 to-transparent pointer-events-none"></div>
+            ${badge ? `<div class="absolute top-2 left-2 z-10 seal-stamp px-1.5 py-0.5 text-[9px] rounded-sm truncate max-w-[80%]">${badge}</div>` : ''}
+            
+            ${!item.visible ? `<div class="absolute inset-0 flex items-center justify-center bg-black/60 z-10"><span class="px-2 py-1 bg-ink-900 border border-red-500/50 text-red-400 text-xs rounded">${t('已下架','Hidden')}</span></div>` : ''}
+            
+            <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/95 via-black/70 to-transparent pointer-events-none"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-3 z-10 text-center">
+              <h3 class="text-sm font-semibold text-gold-300 tracking-widest drop-shadow-md truncate">${name}</h3>
+            </div>
 
-              <!-- 右上角快捷操作 -->
-              <div onclick="event.stopPropagation();" class="absolute top-3 right-3 z-20">
-                ${qty > 0 
-                  ? `<div class="flex items-center gap-1 bg-ink-900/90 border border-gold-400 rounded-full px-2 py-1 shadow-lg backdrop-blur">
-                      <button onclick="quickAdjustCardQty('${item.id}', -1)" class="w-6 h-6 bg-ink-800 text-gold-300 rounded-full flex items-center justify-center font-bold hover:bg-ink-700">-</button>
-                      <span class="text-xs text-gold-300 px-2 font-bold">${qty}</span>
-                      <button onclick="quickAdjustCardQty('${item.id}', 1)" class="w-6 h-6 bg-gold-500 text-ink-950 rounded-full flex items-center justify-center font-bold hover:bg-gold-400">+</button>
-                     </div>` 
-                  : `<button onclick="quickAdjustCardQty('${item.id}', 1)" class="px-3 py-1.5 rounded-full bg-ink-950/80 border border-gold-500/50 text-gold-400 text-xs backdrop-blur hover:bg-gold-500 hover:text-ink-950 transition-colors shadow-lg font-medium tracking-wider">加入备忘</button>`}
-              </div>
+            <!-- 右上角点单按钮 -->
+            <div onclick="event.stopPropagation();" class="absolute top-2 right-2 z-20">
+              ${state.curatorMode 
+                ? `<button onclick="openCuratorEditModal('${item.id}')" class="w-7 h-7 bg-gold-500/90 text-ink-950 rounded-full flex items-center justify-center font-bold text-xs shadow-lg backdrop-blur">✎</button>`
+                : (qty > 0 
+                    ? `<div class="flex items-center gap-1 bg-ink-900/90 border border-gold-400 rounded-full px-1.5 py-0.5 shadow-lg backdrop-blur">
+                        <button onclick="quickAdjustCardQty('${item.id}', -1)" class="w-5 h-5 bg-ink-800 text-gold-300 rounded-full flex items-center justify-center font-bold hover:bg-ink-700 leading-none">-</button>
+                        <span class="text-[10px] text-gold-300 px-1 font-bold">${qty}</span>
+                        <button onclick="quickAdjustCardQty('${item.id}', 1)" class="w-5 h-5 bg-gold-500 text-ink-950 rounded-full flex items-center justify-center font-bold hover:bg-gold-400 leading-none">+</button>
+                       </div>` 
+                    : `<button onclick="quickAdjustCardQty('${item.id}', 1)" class="w-7 h-7 rounded-full bg-ink-950/80 border border-gold-500/50 text-gold-400 flex items-center justify-center backdrop-blur hover:bg-gold-500 hover:text-ink-950 transition-colors shadow-lg font-bold text-sm">+</button>`
+                  )
+              }
             </div>
           </article>
         `;
       }).join('');
     }
 
+    function handleCardClick(id) {
+      if (state.curatorMode) openCuratorEditModal(id);
+      else openDetailModal(id);
+    }
+
+    // ==========================================
+    // 高清详情查看器 Modal (包含多图轮播逻辑)
+    // ==========================================
     function openDetailModal(id) {
       const item = MENU_ITEMS.find(i => i.id === id);
       if(!item) return;
       state.activeItem = item;
-      document.getElementById('modalItemImg').src = item.image;
-      document.getElementById('modalItemTitle').textContent = item.nameZh;
-      document.getElementById('modalItemBadge').textContent = item.badgeZh;
-      document.getElementById('modalItemOneLiner').textContent = item.oneLinerZh;
-      document.getElementById('modalItemStory').textContent = item.storyZh;
+      state.currentImgs = item.images || [];
+      state.currentImgIndex = 0;
+      
+      document.getElementById('modalItemTitle').textContent = t(item.nameZh, item.nameEn);
+      document.getElementById('modalItemBadge').textContent = t(item.badgeZh, item.badgeEn);
+      document.getElementById('modalItemStory').textContent = t(item.storyZh, item.storyEn);
+      
+      renderModalCarousel();
       
       document.getElementById('itemDetailModal').classList.remove('hidden');
       document.getElementById('itemDetailModal').classList.add('flex');
     }
+    
     function closeDetailModal() { 
       document.getElementById('itemDetailModal').classList.add('hidden'); 
       document.getElementById('itemDetailModal').classList.remove('flex'); 
     }
+
+    function renderModalCarousel() {
+      const imgEl = document.getElementById('modalItemImg');
+      if (state.currentImgs.length > 0) {
+        imgEl.src = state.currentImgs[state.currentImgIndex];
+      }
+      
+      const prevBtn = document.getElementById('modalPrevBtn');
+      const nextBtn = document.getElementById('modalNextBtn');
+      const dots = document.getElementById('modalDots');
+      
+      if (state.currentImgs.length > 1) {
+        prevBtn.classList.remove('hidden');
+        nextBtn.classList.remove('hidden');
+        dots.innerHTML = state.currentImgs.map((_, i) => 
+          `<div class="w-2 h-2 rounded-full transition-colors ${i === state.currentImgIndex ? 'bg-gold-400' : 'bg-gold-400/30'}"></div>`
+        ).join('');
+      } else {
+        prevBtn.classList.add('hidden');
+        nextBtn.classList.add('hidden');
+        dots.innerHTML = '';
+      }
+    }
+
+    function changeModalImage(delta) {
+      const len = state.currentImgs.length;
+      if (len <= 1) return;
+      state.currentImgIndex = (state.currentImgIndex + delta + len) % len;
+      // 轻微淡入淡出效果
+      const imgEl = document.getElementById('modalItemImg');
+      imgEl.classList.add('opacity-50');
+      setTimeout(() => {
+        renderModalCarousel();
+        imgEl.classList.remove('opacity-50');
+      }, 150);
+    }
     
+    // ==========================================
+    // 心愿单逻辑
+    // ==========================================
     function quickAdjustCardQty(id, delta) {
       let ext = state.wishlist.find(w => w.itemId === id);
       if (ext) { 
@@ -562,47 +729,27 @@
       else if (delta > 0) {
         state.wishlist.push({itemId: id, qty: 1});
       }
-      localStorage.setItem('yunqi_wishlist', JSON.stringify(state.wishlist));
       renderAll();
     }
+    
     function confirmAddToWishlist() { 
       quickAdjustCardQty(state.activeItem.id, 1); 
       closeDetailModal(); 
-      showToast('已添至点单备忘'); 
+      showToast(t('已添至点单备忘', 'Added to wishlist')); 
     }
-
-    function toggleDockScrollExpand(force) {
-      const panel = document.getElementById('dockExpandPanel');
-      const arrow = document.getElementById('mobileExpandArrow');
-      const isHid = panel.classList.contains('hidden');
-      if (force === true || isHid) {
-        panel.classList.remove('hidden');
-        arrow.textContent = '收卷定制 ▼';
-      } else {
-        panel.classList.add('hidden');
-        arrow.textContent = '展卷定制 ▲';
-      }
-    }
-
-    function renderDockCustomizationPanel() {
-      document.getElementById('dockGuestsValue').textContent = `${state.diners} 位`;
-      document.getElementById('dockTimePills').innerHTML = TIME_SLOTS.map(t => `<button onclick="state.timeSlot='${t.id}';renderAll()" class="py-2.5 rounded-lg text-xs font-medium border transition-colors ${state.timeSlot===t.id ? 'bg-gold-500/20 border-gold-400 text-gold-300':'bg-ink-950 border-gold-500/20 text-parchment-400 hover:text-gold-300'}">${t.labelZh}</button>`).join('');
-      document.getElementById('dockPavilionCards').innerHTML = PAVILIONS.map(p => `<div onclick="state.tableRoom='${p.id}';renderAll()" class="py-2.5 px-3 rounded-lg border text-xs font-medium cursor-pointer transition-colors ${state.tableRoom===p.id ? 'bg-gold-500/20 border-gold-400 text-gold-300':'bg-ink-950 border-gold-500/20 text-parchment-400 hover:text-gold-300'}">${p.nameZh}</div>`).join('');
-    }
-    function setDinersValue(v) { state.diners = v; renderAll(); }
-    function updateBanquetNote(v) { state.banquetNote = v; }
 
     function renderWishlistDock() {
       let count = 0;
       state.wishlist.forEach(w => { count += w.qty; });
       document.getElementById('wishlistBadgeCount').textContent = count;
-      document.getElementById('wishlistBarSub').textContent = `已收录 ${count} 款雅馔`;
+      document.getElementById('wishlistBarSub').textContent = t(`已收录 ${count} 款雅馔`, `${count} items selected`);
       
       const drawerHtml = state.wishlist.map(w => {
         const i = MENU_ITEMS.find(m=>m.id===w.itemId);
         if(!i) return '';
+        const name = t(i.nameZh, i.nameEn);
         return `<div class="flex justify-between items-center py-3 border-b border-gold-500/10">
-                  <div class="text-sm font-medium text-parchment-100">${i.nameZh}</div>
+                  <div class="text-sm font-medium text-parchment-100">${name}</div>
                   <div class="flex gap-3 items-center bg-ink-950 border border-gold-500/20 rounded-lg px-2 py-1">
                     <button onclick="quickAdjustCardQty('${i.id}',-1)" class="w-6 h-6 bg-ink-800 text-gold-400 rounded flex items-center justify-center font-bold hover:bg-ink-700">-</button>
                     <span class="text-sm w-4 text-center text-parchment-100">${w.qty}</span>
@@ -610,32 +757,66 @@
                   </div>
                 </div>`;
       }).join('');
-      document.getElementById('wishlistItemsContainer').innerHTML = drawerHtml || '<div class="text-center text-sm text-parchment-400 py-12 tracking-wider">备忘尚空，请于主页赏阅雅馔</div>';
+      document.getElementById('wishlistItemsContainer').innerHTML = drawerHtml || `<div class="text-center text-sm text-parchment-400 py-12 tracking-wider">${t('备忘尚空，请于画册中挑选','Empty wishlist')}</div>`;
     }
     
     function openWishlistDrawer() { document.getElementById('wishlistDrawerModal').classList.remove('hidden'); document.getElementById('wishlistDrawerModal').classList.add('flex'); }
     function closeWishlistDrawer() { document.getElementById('wishlistDrawerModal').classList.add('hidden'); document.getElementById('wishlistDrawerModal').classList.remove('flex'); }
 
+    // ==========================================
+    // 雅集定制与席单卡片
+    // ==========================================
+    function toggleDockScrollExpand(force) {
+      const panel = document.getElementById('dockExpandPanel');
+      const arrow = document.getElementById('mobileExpandArrow');
+      const isHid = panel.classList.contains('hidden');
+      if (force === true || isHid) {
+        panel.classList.remove('hidden');
+        arrow.textContent = t('收卷 ▼', 'Collapse ▼');
+      } else {
+        panel.classList.add('hidden');
+        arrow.textContent = t('展卷 ▲', 'Expand ▲');
+      }
+    }
+
+    function renderDockCustomizationPanel() {
+      document.getElementById('dockGuestsValue').textContent = `${state.diners} ` + t('位', 'Pax');
+      document.getElementById('dockTimePills').innerHTML = TIME_SLOTS.map(tm => {
+        const lbl = t(tm.labelZh, tm.labelEn);
+        return `<button onclick="state.timeSlot='${tm.id}';renderAll()" class="py-2.5 rounded-lg text-xs font-medium border transition-colors ${state.timeSlot===tm.id ? 'bg-gold-500/20 border-gold-400 text-gold-300':'bg-ink-950 border-gold-500/20 text-parchment-400 hover:text-gold-300'}">${lbl}</button>`;
+      }).join('');
+      
+      document.getElementById('dockPavilionCards').innerHTML = PAVILIONS.map(p => {
+        const lbl = t(p.nameZh, p.nameEn);
+        return `<div onclick="state.tableRoom='${p.id}';renderAll()" class="py-2.5 px-3 rounded-lg border text-xs font-medium cursor-pointer transition-colors ${state.tableRoom===p.id ? 'bg-gold-500/20 border-gold-400 text-gold-300':'bg-ink-950 border-gold-500/20 text-parchment-400 hover:text-gold-300'}">${lbl}</div>`;
+      }).join('');
+    }
+    function setDinersValue(v) { state.diners = v; renderAll(); }
+    function updateBanquetNote(v) { state.banquetNote = v; }
+
     function openBanquetScrollModal() {
-      if(state.wishlist.length === 0) { showToast('请先挑选几款心仪的雅馔'); return; }
+      if(state.wishlist.length === 0) { showToast(t('请先于画册中挑选几款雅馔', 'Please select dishes first')); return; }
       
       const rm = PAVILIONS.find(p => p.id === state.tableRoom);
-      document.getElementById('cardRoomValue').innerHTML = rm.nameZh.split(' ')[0] + `<br><span class="text-[9px] text-[#705528] font-normal mt-1 block">`+ (rm.nameZh.split(' ')[1] || '') +`</span>`;
-      document.getElementById('cardTimeValue').innerHTML = state.timeSlot.split(' · ')[0] + `<br><span class="text-[9px] text-[#705528] font-normal mt-1 block">`+ state.timeSlot.split(' · ')[1] +`</span>`;
-      document.getElementById('cardGuestsValue').textContent = state.diners + '位';
+      const rmName = t(rm.nameZh, rm.nameEn);
+      const tm = TIME_SLOTS.find(t => t.id === state.timeSlot);
+      const tmName = t(tm.labelZh, tm.labelEn);
+      
+      document.getElementById('cardRoomValue').innerHTML = rmName.split(' (')[0] + `<br><span class="text-[9px] text-[#705528] font-normal mt-1 block">(${rmName.split('(')[1]||''}`.replace('((','(');
+      document.getElementById('cardTimeValue').innerHTML = tmName.split(' · ')[0] + `<br><span class="text-[9px] text-[#705528] font-normal mt-1 block">`+ (tmName.split(' · ')[1] || '') +`</span>`;
+      document.getElementById('cardGuestsValue').textContent = state.diners + t('位', ' Pax');
       
       document.getElementById('waiterCardItems').innerHTML = state.wishlist.map((w,i) => {
         const item = MENU_ITEMS.find(m=>m.id===w.itemId); 
+        const name = t(item.nameZh, item.nameEn);
         return `<div class="py-3 flex items-start justify-between">
-                  <div class="text-[13px] font-bold leading-normal break-words pr-4 text-[#1A1612]">${i+1}. ${item.nameZh}</div>
-                  <div class="text-right shrink-0 text-sm font-bold text-[#9B2C20]">×${w.qty} <span class="text-[10px] font-normal">${item.unitZh}</span></div>
+                  <div class="text-[13px] font-bold leading-relaxed break-words pr-4 text-[#1A1612]">${i+1}. ${name}</div>
+                  <div class="text-right shrink-0 text-sm font-bold text-[#9B2C20]">×${w.qty}</div>
                 </div>`;
       }).join('');
       
-      // 备注赋值
-      const noteStr = state.banquetNote.trim() || '无特殊嘱托，主厨正常烹调';
+      const noteStr = state.banquetNote.trim() || t('无特殊忌口，主厨标准出品', 'No dietary restrictions, standard chef preparation');
       document.getElementById('cardNoteValue').textContent = noteStr;
-
       document.getElementById('cardDateStamp').textContent = `CURATED ${new Date().toISOString().slice(0,10).replace(/-/g,'.')}`;
       
       closeWishlistDrawer();
@@ -644,41 +825,79 @@
     }
     function closeWaiterCardModal() { document.getElementById('waiterCardModal').classList.add('hidden'); document.getElementById('waiterCardModal').classList.remove('flex'); }
 
-    // 保存高清席单图片（解决滚动截断Bug）
     async function saveBanquetScrollAsImage() {
       const sf = document.getElementById('sajinPaperSurface');
       const mw = sf.parentElement; 
       
-      // 解除高度限制确保全身完整
       const omh = mw.style.maxHeight; 
       const oof = mw.style.overflow;
       mw.style.maxHeight = 'none'; 
       mw.style.overflow = 'visible';
       
-      showToast('正在铺展席单，请稍候...');
+      showToast(t('正在铺展席单，请稍候...', 'Generating image, please wait...'));
       
-      // 延迟等待重排完成
       await new Promise(r => setTimeout(r, 400));
       
       try {
-        const canvas = await html2canvas(sf, { 
-          scale: 3, 
-          useCORS: true, 
-          backgroundColor: '#F4EFE6' 
-        });
+        const canvas = await html2canvas(sf, { scale: 3, useCORS: true, backgroundColor: '#F4EFE6' });
         const link = document.createElement('a');
-        link.download = `云起雅集席单_${state.tableRoom}_${new Date().toISOString().slice(0,10)}.png`;
+        link.download = `Yunqi_Banquet_${new Date().toISOString().slice(0,10)}.png`;
         link.href = canvas.toDataURL('image/png', 1.0); 
         link.click();
-        showToast('席单已存入相册');
+        showToast(t('席单已存入相册', 'Saved to gallery'));
       } catch (e) { 
-        showToast('保存失败，请直接截图'); 
+        console.error(e);
+        showToast(t('保存失败，请直接截图', 'Save failed, please screenshot')); 
       }
       
-      // 恢复限制
       mw.style.maxHeight = omh; 
       mw.style.overflow = oof;
     }
+
+    // ==========================================
+    // 音乐控制
+    // ==========================================
+    let audioPlayer;
+    let isAudioPlaying = false;
+    let hasInteracted = false;
+
+    function initAudioPlayer() {
+      audioPlayer = document.getElementById('bgAudioPlayer');
+      audioPlayer.src = state.musicUrl;
+      audioPlayer.volume = 0.5;
+    }
+
+    function toggleMusic() {
+      if(!audioPlayer) initAudioPlayer();
+      const btn = document.getElementById('musicBtn');
+      const icon = document.getElementById('musicIcon');
+      
+      if (isAudioPlaying) {
+        audioPlayer.pause();
+        isAudioPlaying = false;
+        btn.classList.remove('music-playing', 'text-gold-400');
+        btn.classList.add('text-gold-300');
+        icon.textContent = '🔇';
+      } else {
+        if(audioPlayer.src !== state.musicUrl) audioPlayer.src = state.musicUrl;
+        audioPlayer.play().then(() => {
+          isAudioPlaying = true;
+          btn.classList.add('music-playing', 'text-gold-400');
+          btn.classList.remove('text-gold-300');
+          icon.textContent = '🎵';
+          showToast(t('雅音已开启', 'Music enabled'));
+        }).catch(err => {
+          showToast(t('由于浏览器限制，请手动点击播放', 'Click manually to play'));
+        });
+      }
+    }
+
+    document.body.addEventListener('click', () => {
+      if (!hasInteracted) {
+        hasInteracted = true;
+        if (!isAudioPlaying) toggleMusic();
+      }
+    }, { once: true });
 
     // ==========================================
     // 掌席模式控制
@@ -691,19 +910,89 @@
         closePasswordModal(); 
         state.curatorMode = true;
         document.getElementById('curatorBanner').classList.remove('hidden'); 
-        showToast('掌席权限已开启');
+        document.getElementById('curatorTriggerBtn').classList.add('hidden');
+        showToast(t('掌席权限已开启', 'Curator Mode Enabled'));
+        renderAll();
       } else { 
-        showToast('密码有误，请重试'); 
+        showToast(t('密钥错误，请重试', 'Incorrect password')); 
       }
     }
-    
-    function clearMenuData() {
-      localStorage.removeItem('yunqi_wishlist');
-      state.wishlist = [];
-      showToast('缓存已清空，数据已重置');
+
+    function exitCuratorMode() {
+      state.curatorMode = false;
+      document.getElementById('curatorBanner').classList.add('hidden');
+      document.getElementById('curatorTriggerBtn').classList.remove('hidden');
+      showToast(t('已退出掌席模式', 'Exited Curator Mode'));
       renderAll();
     }
 
+    function openMusicEditModal() {
+      document.getElementById('musicUrlInput').value = state.musicUrl;
+      document.getElementById('musicEditModal').classList.remove('hidden');
+      document.getElementById('musicEditModal').classList.add('flex');
+    }
+    function closeMusicEditModal() {
+      document.getElementById('musicEditModal').classList.add('hidden');
+      document.getElementById('musicEditModal').classList.remove('flex');
+    }
+    function saveMusicUrl() {
+      const newUrl = document.getElementById('musicUrlInput').value.trim();
+      if(newUrl) {
+        state.musicUrl = newUrl;
+        localStorage.setItem('yunqi_music_url', state.musicUrl);
+        showToast(t('音乐链接已更新', 'Music updated'));
+        if(isAudioPlaying) { audioPlayer.src = state.musicUrl; audioPlayer.play(); }
+      }
+      closeMusicEditModal();
+    }
+
+    // 菜品相册编辑 (支持多图与上下架)
+    function openCuratorEditModal(id) {
+      const item = MENU_ITEMS.find(i => i.id === id);
+      if(!item) return;
+      document.getElementById('editItemId').value = item.id;
+      document.getElementById('editItemVisible').checked = item.visible !== false;
+      
+      document.getElementById('editItemImages').value = (item.images || []).join('\n');
+      document.getElementById('editItemNameZh').value = item.nameZh || '';
+      document.getElementById('editItemNameEn').value = item.nameEn || '';
+      document.getElementById('editItemBadgeZh').value = item.badgeZh || '';
+      document.getElementById('editItemBadgeEn').value = item.badgeEn || '';
+      document.getElementById('editItemStoryZh').value = item.storyZh || '';
+      document.getElementById('editItemStoryEn').value = item.storyEn || '';
+      
+      document.getElementById('curatorEditModal').classList.remove('hidden');
+      document.getElementById('curatorEditModal').classList.add('flex');
+    }
+    function closeCuratorEditModal() {
+      document.getElementById('curatorEditModal').classList.add('hidden');
+      document.getElementById('curatorEditModal').classList.remove('flex');
+    }
+    function saveCuratorEdit() {
+      const id = document.getElementById('editItemId').value;
+      const idx = MENU_ITEMS.findIndex(i => i.id === id);
+      if(idx > -1) {
+        const rawUrls = document.getElementById('editItemImages').value.split('\n');
+        const cleanUrls = rawUrls.map(u => u.trim()).filter(u => u);
+        
+        MENU_ITEMS[idx].visible = document.getElementById('editItemVisible').checked;
+        MENU_ITEMS[idx].images = cleanUrls.length > 0 ? cleanUrls : ['https://placehold.co/800x800/1a1815/dfc590?text=No+Image'];
+        
+        MENU_ITEMS[idx].nameZh = document.getElementById('editItemNameZh').value;
+        MENU_ITEMS[idx].nameEn = document.getElementById('editItemNameEn').value;
+        MENU_ITEMS[idx].badgeZh = document.getElementById('editItemBadgeZh').value;
+        MENU_ITEMS[idx].badgeEn = document.getElementById('editItemBadgeEn').value;
+        MENU_ITEMS[idx].storyZh = document.getElementById('editItemStoryZh').value;
+        MENU_ITEMS[idx].storyEn = document.getElementById('editItemStoryEn').value;
+        
+        saveMenuData();
+        showToast(t('画作资料已保存', 'Saved successfully'));
+        renderAll();
+      }
+      closeCuratorEditModal();
+    }
+
+    // Toast
     let toastTimer;
     function showToast(msg) {
       document.getElementById('toastMessage').textContent = msg;
@@ -715,52 +1004,6 @@
         box.classList.add('opacity-0', '-translate-y-4'); 
         box.classList.remove('opacity-100', 'translate-y-0'); 
       }, 2500);
-    }
-
-    // ==========================================
-    // 静态暗金粒子系统 (无四季变化)
-    // ==========================================
-    let ambientParticles = [];
-    function initAmbientMistCanvas() {
-      const canvas = document.getElementById('ambientCanvas'); 
-      const ctx = canvas.getContext('2d');
-      let w = canvas.width = window.innerWidth;
-      let h = canvas.height = window.innerHeight;
-      window.addEventListener('resize', () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; });
-      
-      // 秋季金粉配置
-      const pColor = '200, 162, 101';
-      const targetDx = -0.6;
-      const targetDy = 0.8;
-      const baseSize = 2.0;
-      
-      ambientParticles = Array.from({ length: 30 }, () => ({ 
-        x: Math.random() * w, 
-        y: Math.random() * h, 
-        r: Math.random(), 
-        alpha: Math.random() * 0.3 + 0.05,
-        phase: Math.random() * Math.PI * 2 
-      }));
-
-      function animate() {
-        ctx.clearRect(0, 0, w, h);
-        
-        ambientParticles.forEach(p => {
-          p.x += targetDx + Math.sin(p.phase) * 0.2; 
-          p.y += targetDy;
-          p.phase += 0.015;
-
-          if (p.y > h + 10) { p.y = -10; p.x = Math.random() * w; } 
-          if (p.x < -10) p.x = w + 10;
-
-          ctx.beginPath(); 
-          ctx.arc(p.x, p.y, p.r * baseSize, 0, Math.PI * 2); 
-          ctx.fillStyle = `rgba(${pColor}, ${p.alpha})`; 
-          ctx.fill();
-        });
-        requestAnimationFrame(animate);
-      }
-      animate();
     }
   </script>
 </body>
