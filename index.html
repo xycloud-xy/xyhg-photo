@@ -84,7 +84,7 @@
 
 <body class="bg-paper-texture min-h-screen flex flex-col selection:bg-gold-500/30 selection:text-gold-300">
 
-  <!-- 隐藏的音乐播放器 -->
+  <!-- HTML5 音乐播放器 -->
   <audio id="bgAudioPlayer" loop preload="auto"></audio>
 
   <!-- 顶部控制栏 -->
@@ -101,7 +101,7 @@
       <div class="flex items-center gap-1.5 sm:gap-2">
         <!-- 单双列切换 -->
         <button onclick="toggleGridCols()" class="px-2.5 py-1.5 rounded-full bg-ink-800/90 border border-gold-500/35 hover:border-gold-400 text-xs font-medium tracking-wider text-gold-300 transition-all">
-          <span id="ui-btn-grid">双列</span>
+          <span id="ui-btn-grid">单列</span>
         </button>
 
         <!-- 中英文切换 -->
@@ -138,15 +138,39 @@
     </div>
   </div>
 
-  <!-- 首页大图区块 -->
+  <!-- 首页美学图文与交互区块 -->
   <section class="relative z-10 pt-4 pb-3 sm:pt-8 sm:pb-6 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-    <div class="relative rounded-2xl overflow-hidden shadow-2xl h-40 sm:h-56 flex items-center justify-center group bg-ink-950">
-      <div class="absolute inset-0 transition-transform duration-1000 group-hover:scale-105">
-        <img src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1600&q=80" alt="Vibe" class="w-full h-full object-cover object-center opacity-70" />
-        <div class="absolute inset-0 bg-gradient-to-t from-ink-950 via-transparent to-ink-950/60"></div>
+    <div class="relative rounded-2xl overflow-hidden shadow-2xl p-5 sm:p-8 md:p-10 flex flex-col justify-end bg-ink-950 min-h-[320px] sm:min-h-[380px] border border-gold-500/15">
+      <!-- 背景图与遮罩 -->
+      <div class="absolute inset-0 transition-transform duration-1000 hover:scale-105">
+        <img src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1600&q=80" alt="Vibe" class="w-full h-full object-cover object-center opacity-40" />
+        <div class="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/70 to-transparent"></div>
       </div>
-      <div class="relative z-10 text-center space-y-3 px-4">
-        <h1 class="text-2xl sm:text-4xl lg:text-5xl font-normal tracking-widest text-parchment-100 drop-shadow-md" id="ui-text-slogan">山 海 入 馔 · 寻 味 溯 源</h1>
+      
+      <!-- 内容层 -->
+      <div class="relative z-10 space-y-4 max-w-2xl">
+        <!-- 顶部红点标签 -->
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-gold-500/30 bg-ink-950/60 backdrop-blur-md">
+          <span class="w-1.5 h-1.5 rounded-full bg-cinnabar-600"></span>
+          <span class="text-[10px] sm:text-xs text-gold-400 tracking-widest font-medium" id="ui-tag-hero">新中式东方美学 · 闽南私宴与武夷岩茶</span>
+        </div>
+        
+        <!-- 标题与文案 -->
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-normal tracking-widest text-white drop-shadow-lg" id="ui-title-hero">山海入馔 · 岩骨茶香</h1>
+        <p class="text-xs sm:text-sm text-parchment-300 leading-relaxed font-light text-justify opacity-90" id="ui-desc-hero">
+          循泉州古早风物与传统官府汤羹之法，融武夷山正岩肉桂之醇厚。轻触任意画册赏阅溯源，底部随时展卷定制私享茶寮与生成洒金笺席单。
+        </p>
+        
+        <!-- 快捷定制卡片（动态联动） -->
+        <div class="mt-6 flex flex-row items-center justify-between p-3.5 sm:p-5 rounded-xl border border-gold-500/25 bg-ink-900/60 backdrop-blur-md shadow-inner gap-3">
+          <div class="flex flex-col gap-1.5 min-w-0">
+            <span class="text-[10px] sm:text-xs text-parchment-400 tracking-widest" id="ui-lbl-herostatus">当前席位雅集定制</span>
+            <span class="text-xs sm:text-sm text-gold-400 font-medium tracking-widest truncate" id="heroCustomStatus">临水听竹轩 · 4位 · 已选 0 道雅馔</span>
+          </div>
+          <button onclick="toggleDockScrollExpand(true)" class="shrink-0 px-3 py-2 sm:px-4 sm:py-2.5 rounded-lg border border-gold-500/40 text-gold-300 text-xs sm:text-sm hover:bg-gold-500/20 transition-colors tracking-widest flex items-center gap-1.5" id="ui-btn-hero-expand">
+            展卷定制席位 <span class="text-[10px]">↓</span>
+          </button>
+        </div>
       </div>
     </div>
   </section>
@@ -154,7 +178,6 @@
   <!-- 七大分类导航 -->
   <nav class="sticky top-16 z-20 backdrop-blur-md bg-ink-900/90 border-y border-gold-500/15">
     <div class="max-w-7xl mx-auto py-2 px-3 sm:px-6 lg:px-8">
-      <!-- 添加内边距，解决发光被截断的问题 -->
       <div id="categoryTabs" class="flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-2 -mx-2"></div>
     </div>
   </nav>
@@ -274,7 +297,7 @@
     </div>
   </div>
 
-  <!-- 洒金笺席单 Modal (无价格版，强化雅嘱，无标签) -->
+  <!-- 洒金笺席单 Modal (无价格版，强化雅嘱，无云起印章，无雅集珍席顶标) -->
   <div id="waiterCardModal" onclick="if(event.target === this) closeWaiterCardModal()" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-md">
     <div class="relative w-full max-w-md max-h-[95vh] overflow-y-auto rounded-2xl p-1.5 bg-gradient-to-b from-gold-400/80 via-gold-600/50 to-gold-400/80 shadow-2xl no-scrollbar">
       
@@ -284,7 +307,6 @@
           
           <button data-html2canvas-ignore="true" onclick="closeWaiterCardModal()" class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-[#EAE2D3] border border-[#8C6D3F]/50 flex items-center justify-center text-sm shadow-md text-[#5C4D3C] z-10">✕</button>
           
-          <!-- 去除雅集珍席顶标 -->
           <div class="text-center space-y-2 border-b-[1.5px] border-[#8C6D3F]/30 pb-4 pt-2">
             <h3 class="text-2xl font-bold tracking-[0.2em] text-[#1A1612] leading-normal py-1" id="card-title">云起·东方雅集席单</h3>
             <div class="text-[9px] tracking-[0.25em] text-[#705528] uppercase">YUNQI PRIVATE TEA & BANQUET SCROLL</div>
@@ -309,12 +331,9 @@
             <div id="cardNoteValue" class="text-[13px] text-[#9B2C20] font-bold leading-relaxed text-center min-h-[2rem]"></div>
           </div>
           
-          <div class="pt-4 mt-2 flex items-center justify-between border-t border-[#8C6D3F]/20">
-            <div class="text-left">
-              <div data-html2canvas-ignore="true" class="text-[10px] text-[#5C4D3C] tracking-wide" id="card-footer">出示给管家或保存为图片</div>
-              <div id="cardDateStamp" class="text-[9px] text-[#8C6D3F] mt-1 tracking-widest uppercase"></div>
-            </div>
-            <div class="seal-stamp opacity-40 scale-75 transform origin-bottom-right rotate-[-15deg]">云起</div>
+          <div class="pt-4 mt-2 border-t border-[#8C6D3F]/20 text-center w-full">
+            <div data-html2canvas-ignore="true" class="text-[10px] text-[#5C4D3C] tracking-wide" id="card-footer">出示给管家或保存为图片</div>
+            <div id="cardDateStamp" class="text-[9px] text-[#8C6D3F] mt-1 tracking-widest uppercase"></div>
           </div>
         </div>
       </div>
@@ -326,12 +345,12 @@
     </div>
   </div>
 
-  <!-- 掌席密码 Modal (去除了123456提示) -->
+  <!-- 掌席密码 Modal -->
   <div id="passwordModal" onclick="if(event.target === this) closePasswordModal()" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/85 backdrop-blur-md">
     <div class="w-full max-w-sm bg-ink-900 border border-gold-500/40 rounded-2xl p-6 text-center space-y-5 shadow-2xl">
       <div class="inline-block seal-stamp px-2 py-0.5 text-[10px] rounded-sm">权限校验</div>
       <h4 class="text-base font-medium text-gold-300 tracking-widest">掌席模式需验证</h4>
-      <input type="password" id="curatorPasswordInput" placeholder="请输入密码" class="w-full bg-ink-950 border border-gold-500/30 rounded-lg px-4 py-3 text-center text-parchment-100 focus:outline-none focus:border-gold-400 tracking-widest" />
+      <input type="password" id="curatorPasswordInput" placeholder="●●●●●●" class="w-full bg-ink-950 border border-gold-500/30 rounded-lg px-4 py-3 text-center text-parchment-100 focus:outline-none focus:border-gold-400 tracking-widest" />
       <div class="flex items-center gap-3 pt-2">
         <button onclick="closePasswordModal()" class="flex-1 py-2.5 rounded-xl bg-ink-800 text-parchment-300 text-sm tracking-wider hover:bg-ink-700">取消</button>
         <button onclick="verifyPassword()" class="flex-1 py-2.5 rounded-xl bg-gold-500 text-ink-950 text-sm font-bold tracking-wider hover:bg-gold-400">确认开启</button>
@@ -477,7 +496,7 @@
     let MENU_ITEMS = [];
     let state = {
       lang: 'zh', 
-      singleCol: false, // false表示网格多列，true表示单列大图
+      singleCol: false, 
       activeCategory: 'all', 
       curatorMode: false,
       activeItem: null, 
@@ -521,7 +540,8 @@
         if(m.visible === undefined) m.visible = true;
       });
 
-      state.wishlist = []; // 打开强制清空心愿单
+      // 每次加载都清空心愿单，给每个客人全新体验
+      state.wishlist = []; 
       
       initAudioPlayer();
       renderAll();
@@ -551,7 +571,6 @@
     }
 
     function updateStaticUITexts() {
-      // 按钮文字显示当前正处于的状态（所见即所得）
       const gridBtnEl = document.getElementById('ui-btn-grid');
       if(gridBtnEl) gridBtnEl.textContent = state.singleCol ? t('单列', 'Single Col') : t('双列', 'Grid Cols');
       
@@ -566,8 +585,13 @@
       document.getElementById('ui-btn-editmusic').textContent = t('🎵 修改音乐', '🎵 Edit Music');
       document.getElementById('ui-btn-reset').textContent = t('恢复默认', 'Reset');
       document.getElementById('ui-btn-exitcurator').textContent = t('退出掌席', 'Exit');
-      document.getElementById('ui-text-slogan').textContent = t('山 海 入 馔 · 寻 味 溯 源', 'MOUNTAINS AND SEAS ON A PLATE');
       
+      if(document.getElementById('ui-tag-hero')) document.getElementById('ui-tag-hero').textContent = t('新中式东方美学 · 闽南私宴与武夷岩茶', 'New Chinese Aesthetics · Minnan Banquet & Wuyi Tea');
+      if(document.getElementById('ui-title-hero')) document.getElementById('ui-title-hero').textContent = t('山海入馔 · 岩骨茶香', 'Mountains and Seas · Rock Tea Aroma');
+      if(document.getElementById('ui-desc-hero')) document.getElementById('ui-desc-hero').textContent = t('循泉州古早风物与传统官府汤羹之法，融武夷山正岩肉桂之醇厚。轻触任意画册赏阅溯源，底部随时展卷定制私享茶寮与生成洒金笺席单。', 'Follow ancient recipes of Quanzhou, blended with rich Wuyi rock tea. Tap any artwork to trace its origins, and expand the scroll below to customize your pavilion and generate the banquet scroll.');
+      if(document.getElementById('ui-lbl-herostatus')) document.getElementById('ui-lbl-herostatus').textContent = t('当前席位雅集定制', 'Current Banquet Customization');
+      if(document.getElementById('ui-btn-hero-expand')) document.getElementById('ui-btn-hero-expand').innerHTML = t('展卷定制席位 <span class="text-[10px]">↓</span>', 'Expand Customization <span class="text-[10px]">↓</span>');
+
       document.getElementById('ui-tag-custom').textContent = t('定制', 'Custom');
       document.getElementById('ui-title-custom').textContent = t('席位雅集定制卷', 'Banquet Customization Scroll');
       document.getElementById('ui-label-guests').textContent = t('一、入席人数', 'I. Number of Guests');
@@ -623,7 +647,6 @@
       const grid = document.getElementById('menuGrid');
       if(!grid) return;
       
-      // 单双列类名控制：singleCol为true时，使用1列或2列的大图；为false时，使用更密集的方块网格
       grid.className = state.singleCol 
         ? 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6' 
         : 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-5';
@@ -652,7 +675,6 @@
               <h3 class="${state.singleCol ? 'text-lg' : 'text-sm'} font-semibold text-gold-300 tracking-widest drop-shadow-md truncate">${name}</h3>
             </div>
 
-            <!-- 右上角点单按钮 / 编辑按钮 -->
             <div onclick="event.stopPropagation();" class="absolute top-2 right-2 z-20">
               ${state.curatorMode 
                 ? `<button onclick="openCuratorEditModal('${item.id}')" class="w-7 h-7 bg-gold-500/90 text-ink-950 rounded-full flex items-center justify-center font-bold text-xs shadow-lg backdrop-blur hover:bg-gold-400">✎</button>`
@@ -765,6 +787,16 @@
       document.getElementById('wishlistBadgeCount').textContent = count;
       document.getElementById('wishlistBarSub').textContent = t(`已收录 ${count} 款雅馔`, `${count} items selected`);
       
+      // 实时联动首页顶部横幅的当前状态
+      const rm = PAVILIONS.find(p => p.id === state.tableRoom);
+      const rmName = rm ? t(rm.nameZh, rm.nameEn).split(' (')[0] : '';
+      const heroStatus = document.getElementById('heroCustomStatus');
+      if (heroStatus) {
+        const guestStr = state.diners + (state.lang === 'zh' ? '位' : ' Pax');
+        const itemStr = state.lang === 'zh' ? `已选 ${count} 道雅馔` : `${count} items`;
+        heroStatus.textContent = `${rmName} · ${guestStr} · ${itemStr}`;
+      }
+
       const drawerHtml = state.wishlist.map(w => {
         const i = MENU_ITEMS.find(m=>m.id===w.itemId);
         if(!i) return '';
@@ -854,7 +886,6 @@
       const sf = document.getElementById('sajinPaperSurface');
       const mw = sf.parentElement; 
       
-      // 临时解除高度限制，确保全幅截图
       const omh = mw.style.maxHeight; 
       const oof = mw.style.overflow;
       mw.style.maxHeight = 'none'; 
@@ -862,7 +893,6 @@
       
       showToast(t('正在铺展席单，请稍候...', 'Generating image, please wait...'));
       
-      // 延时等待重绘完毕
       await new Promise(r => setTimeout(r, 400));
       
       try {
@@ -877,7 +907,6 @@
         showToast(t('保存失败，请直接截图', 'Save failed, please screenshot')); 
       }
       
-      // 恢复高度限制
       mw.style.maxHeight = omh; 
       mw.style.overflow = oof;
     }
@@ -921,7 +950,6 @@
       }
     }
 
-    // 全局无感触发器 (触碰屏幕、滑动、点击即自动播放)
     const startAudioInteraction = () => {
       if (!hasInteracted) {
         hasInteracted = true;
@@ -971,10 +999,8 @@
       renderAll();
     }
 
-    // 菜品相册编辑 (支持无id的新增、多图与上下架)
     function openCuratorEditModal(id) {
       if (id) {
-        // 编辑模式
         const item = MENU_ITEMS.find(i => i.id === id);
         if(!item) return;
         document.getElementById('editModalTitle').textContent = t('编辑相册画作', 'Edit Dish');
@@ -989,7 +1015,6 @@
         document.getElementById('editItemStoryZh').value = item.storyZh || '';
         document.getElementById('editItemStoryEn').value = item.storyEn || '';
       } else {
-        // 新增模式
         document.getElementById('editModalTitle').textContent = t('新增雅馔', 'Add New Dish');
         document.getElementById('editItemId').value = '';
         document.getElementById('editItemVisible').checked = true;
@@ -1018,7 +1043,6 @@
       const finalImages = cleanUrls.length > 0 ? cleanUrls : ['https://placehold.co/800x800/1a1815/dfc590?text=No+Image'];
 
       if (id) {
-        // 更新已有
         const idx = MENU_ITEMS.findIndex(i => i.id === id);
         if(idx > -1) {
           MENU_ITEMS[idx].visible = document.getElementById('editItemVisible').checked;
@@ -1031,7 +1055,6 @@
           MENU_ITEMS[idx].storyEn = document.getElementById('editItemStoryEn').value;
         }
       } else {
-        // 新建并加入当前分类 (如果是“全部”则加入默认的minhai)
         const newItem = {
           id: 'dish-' + Date.now(),
           category: state.activeCategory === 'all' ? 'minhai' : state.activeCategory,
@@ -1053,7 +1076,6 @@
       closeCuratorEditModal();
     }
 
-    // Toast
     let toastTimer;
     function showToast(msg) {
       const box = document.getElementById('toastBox');
