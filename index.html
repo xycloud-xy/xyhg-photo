@@ -409,24 +409,6 @@
       masterGain.gain.value = 0;
       masterGain.connect(audioCtx.destination);
 
-      // 1. 水沸/松风声 (带通滤波白噪，提升音量与频段)
-      const bufferSize = audioCtx.sampleRate * 2;
-      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-      const output = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) {
-        output[i] = (Math.random() * 2 - 1) * 0.45; // 调大增益
-      }
-      windNoise = audioCtx.createBufferSource();
-      windNoise.buffer = buffer;
-      windNoise.loop = true;
-
-      const filter = audioCtx.createBiquadFilter();
-      filter.type = 'bandpass';
-      filter.frequency.value = 1000; // 1000Hz是手机喇叭最敏感的区域
-      filter.Q.value = 0.8;
-
-      windNoise.connect(filter);
-      filter.connect(masterGain);
 
       // 2. 东方古琴/颂钵泛音 (正弦波叠加)
       droneOsc1 = audioCtx.createOscillator();
