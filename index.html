@@ -141,15 +141,32 @@
   <!-- 首页美学图文与交互区块 -->
   <section class="relative z-10 pt-4 pb-3 sm:pt-8 sm:pb-6 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
     <div class="relative rounded-2xl overflow-hidden shadow-2xl p-5 sm:p-8 md:p-10 flex flex-col justify-end bg-ink-950 min-h-[320px] sm:min-h-[380px] border border-gold-500/15">
-      <!-- 背景轮播图 -->
-<div class="hero-slider absolute inset-0 transition-transform duration-1000 hover:scale-105">
-  <img src="images/xyhg-1.jpg" alt="">
-  <img src="images/xyhg-2.jpg" alt="">
-  <img src="images/xyhg-3.jpg" alt="">
+ <!-- 背景轮播图 -->
+<div class="hero-slider absolute inset-0 hover:scale-105">
+  <img src="images/xyhg-1.jpg" alt="" class="slide-img absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000">
+  <img src="images/xyhg-2.jpg" alt="" class="slide-img absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000">
+  <img src="images/xyhg-3.jpg" alt="" class="slide-img absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000">
   <div class="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/70 to-transparent"></div>
 </div>
 
-      
+<script>
+// 叠化自动轮播
+const slides = document.querySelectorAll('.slide-img');
+let current = 0;
+// 第一张默认显示
+slides[current].classList.add('opacity-100');
+
+function nextSlide() {
+  // 当前图隐藏
+  slides[current].classList.remove('opacity-100');
+  current = (current + 1) % slides.length;
+  // 下一张显示
+  slides[current].classList.add('opacity-100');
+}
+// 3秒切换一次，duration-1000是动画1秒，间隔3秒
+setInterval(nextSlide, 3000);
+</script>
+
       <!-- 内容层 -->
       <div class="relative z-10 space-y-4 max-w-2xl">
       
