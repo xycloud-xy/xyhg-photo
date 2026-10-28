@@ -85,7 +85,7 @@
 <body class="bg-paper-texture min-h-screen flex flex-col selection:bg-gold-500/30 selection:text-gold-300">
 
   <!-- HTML5 音乐播放器 -->
-  <audio id="bgAudioPlayer" loop preload="auto"></audio>
+  <audio id="bgAudioPlayer" loop preload="auto">
 
   <!-- 顶部控制栏 -->
   <header class="sticky top-0 z-30 backdrop-blur-md bg-ink-950/85 border-b border-gold-500/15 transition-all">
@@ -141,9 +141,11 @@
   <!-- 首页美学图文与交互区块 -->
   <section class="relative z-10 pt-4 pb-3 sm:pt-8 sm:pb-6 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
     <div class="relative rounded-2xl overflow-hidden shadow-2xl p-5 sm:p-8 md:p-10 flex flex-col justify-end bg-ink-950 min-h-[320px] sm:min-h-[380px] border border-gold-500/15">
-      <!-- 背景图与遮罩 -->
-      <div class="absolute inset-0 transition-transform duration-1000 hover:scale-105">
-        <img src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1600&q=80" alt="Vibe" class="w-full h-full object-cover object-center opacity-40" />
+      <!-- 背景轮播图 -->
+      <div class="hero-slider absolute inset-0 transition-transform duration-1000 hover:scale-105">
+        <img src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1600&q=80" alt="Vibe 1" class="hero-slide absolute inset-0 w-full h-full object-cover object-center opacity-40 transition-opacity duration-1000" />
+        <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=1600&q=80" alt="Vibe 2" class="hero-slide absolute inset-0 w-full h-full object-cover object-center opacity-0 transition-opacity duration-1000" />
+        <img src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1600&q=80" alt="Vibe 3" class="hero-slide absolute inset-0 w-full h-full object-cover object-center opacity-0 transition-opacity duration-1000" />
         <div class="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/70 to-transparent"></div>
       </div>
       
@@ -171,6 +173,13 @@
             展卷定制席位 <span class="text-[10px]">↓</span>
           </button>
         </div>
+      </div>
+
+      <!-- 轮播指示点 -->
+      <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+        <div class="hero-dot w-2 h-2 rounded-full bg-gold-400 transition-all"></div>
+        <div class="hero-dot w-2 h-2 rounded-full bg-gold-400/30 transition-all"></div>
+        <div class="hero-dot w-2 h-2 rounded-full bg-gold-400/30 transition-all"></div>
       </div>
     </div>
   </section>
@@ -297,7 +306,7 @@
     </div>
   </div>
 
-  <!-- 洒金笺席单 Modal (无价格版，强化雅嘱，无云起印章，无雅集珍席顶标) -->
+  <!-- 洒金笺席单 Modal -->
   <div id="waiterCardModal" onclick="if(event.target === this) closeWaiterCardModal()" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-md">
     <div class="relative w-full max-w-md max-h-[95vh] overflow-y-auto rounded-2xl p-1.5 bg-gradient-to-b from-gold-400/80 via-gold-600/50 to-gold-400/80 shadow-2xl no-scrollbar">
       
@@ -325,7 +334,7 @@
             <div id="waiterCardItems" class="divide-y divide-[#8C6D3F]/15 py-1"></div>
           </div>
           
-          <!-- 醒目的席间雅嘱备注区 -->
+          <!-- 席间雅嘱备注区 -->
           <div class="mt-5 pt-4 border-t-[1.5px] border-dashed border-[#8C6D3F]/40 bg-[#EAE2D3]/40 rounded-b-lg -mx-2 px-3 pb-3">
             <div class="text-[11px] text-[#705528] mb-2 font-semibold tracking-widest text-center" id="card-lbl-note">✿ 席 间 雅 嘱 / 偏 好 备 注 ✿</div>
             <div id="cardNoteValue" class="text-[13px] text-[#9B2C20] font-bold leading-relaxed text-center min-h-[2rem]"></div>
@@ -370,7 +379,7 @@
     </div>
   </div>
 
-  <!-- 掌席相册编辑 Modal (支持新增、多图轮播) -->
+  <!-- 掌席相册编辑 Modal -->
   <div id="curatorEditModal" onclick="if(event.target === this) closeCuratorEditModal()" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/85 backdrop-blur-md">
     <div class="w-full max-w-md bg-ink-900 border border-gold-500/40 rounded-2xl p-6 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-gold-500/20 pb-3">
@@ -429,47 +438,113 @@
   </div>
 
   <script>
-    // 默认陶笛禅意轻音乐：宗次郎《故乡的原风景》（网易云免费直链，陶笛/奥卡利那笛独奏）
+    // 默认陶笛禅意轻音乐
     const DEFAULT_MUSIC_URL = 'https://music.163.com/song/media/outer/url?id=481375.mp3';
 
-    // 默认数据配置 (包含本地实拍图命名)
+    // 默认菜品数据（17道完整版）
     const DEFAULT_MENU_ITEMS = [
-      { id: 'dish-1', category: 'minhai', 
-        nameZh: '闽南传统姜母鸭', nameEn: 'Minnan Ginger Duck', 
-        badgeZh: '非遗古法', badgeEn: 'Heritage', 
-        storyZh: '精选漳州三年陈老姜与正番鸭，全程不加一滴水，古法慢焗，香气四溢，暖胃更暖心。', 
-        storyEn: 'Selected 3-year-old ginger and Muscovy duck, slow-cooked in traditional clay pot.', 
+      { id: 'dish-1', category: 'minhai',
+        nameZh: '闽南传统姜母鸭', nameEn: 'Minnan Ginger Duck',
+        badgeZh: '非遗古法', badgeEn: 'Heritage',
+        storyZh: '闽南传统美食，选用漳洲散养红面番鸭搭配陈年老姜，以芝麻油姜片小火煸炒放入砂锅慢焖细煨，火候循序渐进，焖好的姜母鸭色泽金黄泛油光，肉质紧实入味，姜香醇厚却不厚辣。咬一口酥而不腻、滋香四溢，鸭性寒，姜性热，二者中和，温而不燥。是当地宴席与家常皆受欢迎的招牌佳肴。',
+        storyEn: 'A classic Minnan heritage dish. Free-range red-faced muscovy duck from Zhangzhou is paired with aged ginger, stir-fried in sesame oil and slow-braised in clay pot. Golden glossy skin, firm and flavorful meat, rich ginger aroma without being harsh. Warm and balanced, a signature banquet and home-style delicacy.',
         images: ['images/1.jpg'], visible: true },
-      { id: 'dish-2', category: 'quanyun', 
-        nameZh: '安海土笋冻', nameEn: 'Anhai Sipunculid Jelly', 
-        badgeZh: '天然胶原', badgeEn: 'Collagen', 
-        storyZh: '泉州传承百年的海洋奇珍，天然胶质凝结如玉，佐以特制酱汁，鲜冷爽口。', 
-        storyEn: 'A centenary ocean treasure from Quanzhou, naturally coagulated with fresh collagen.', 
+      { id: 'dish-2', category: 'dingdun',
+        nameZh: '30年熟地糕蟹老鸭汤', nameEn: '30yr Herbal Crab Duck Soup',
+        badgeZh: '闽南药膳', badgeEn: 'Herbal Soup',
+        storyZh: '源自福建闽南传统民间滋补汤，膏蟹增鲜古法慢煨，汤色深褐发黑，药香柔和、蟹鲜突出，30年熟地温润养身，老鸭温补，四季药膳臻品。',
+        storyEn: 'A traditional nourishing soup from Minnan, Fujian. Slow-simmered with roe crab for umami depth, deep brown broth with gentle herbal aroma and prominent crab sweetness. 30-year aged rehmannia root nourishes the body, paired with old duck for a premium herbal soup all year round.',
         images: ['images/2.jpg'], visible: true },
-      { id: 'dish-3', category: 'huoxiang', 
-        nameZh: '脆皮牛小排', nameEn: 'Crispy Beef Short Ribs', 
-        badgeZh: '中西合璧', badgeEn: 'Fusion', 
-        storyZh: '雪花牛肉经新会陈皮慢炖后猛火脆煎，外酥里嫩，肉汁在口腔中完美释放。', 
-        storyEn: 'Marbled beef slow-stewed with aged tangerine peel then pan-fried to crispy perfection.', 
+      { id: 'dish-3', category: 'quanyun',
+        nameZh: '永春醋猪脚', nameEn: 'Yongchun Vinegar Pork Trotter',
+        badgeZh: '一城一味', badgeEn: 'Local Classic',
+        storyZh: '泉州这道老醋猪脚，只选用猪脚四点金部份，再用陈年老醋慢炖而成，酸香醇厚，软糯脱骨，吃的不仅是美味，更是时光沉淀的故土风味，更是一城一风味的代表作。',
+        storyEn: 'A Quanzhou classic. Only the finest cut of pork trotter is used, slow-stewed with aged vinegar. Rich sour aroma, soft and tender, falling off the bone. A taste of hometown nostalgia, the iconic flavor of the city.',
         images: ['images/3.jpg'], visible: true },
-      { id: 'dish-4', category: 'dingdun', 
-        nameZh: '迷你火瞳翅', nameEn: 'Mini Shark Fin Soup', 
-        badgeZh: '古法浓汤', badgeEn: 'Rich Broth', 
-        storyZh: '取金华火腿最饱满的部位隔水慢炖，汤色金黄粘唇，每一口都是时间沉淀的醇厚。', 
-        storyEn: 'Slow-stewed with premium Jinhua ham, producing a golden, lip-smacking rich broth.', 
+      { id: 'dish-4', category: 'quanyun',
+        nameZh: '红菇拌面线', nameEn: 'Red Mushroom Vermicelli',
+        badgeZh: '山野海味', badgeEn: 'Mountain & Sea',
+        storyZh: '德化山野的鲜，泉州湾大海的甜，都在这碗红菇面线里了。灵魂是那一抹天然的红色——野生红菇，无需过多调料，汤头自带鲜甜。搭配细软的面线，简单一煮，就是暖心暖胃的极致享受。',
+        storyEn: 'The freshness of Dehua mountains and the sweetness of Quanzhou bay meet in this bowl. Wild red mushrooms bring natural crimson color and inherent umami, no extra seasoning needed. Soft vermicelli in sweet broth, a comforting and nourishing staple.',
         images: ['images/4.jpg'], visible: true },
-      { id: 'dish-5', category: 'huoxiang', 
-        nameZh: '芝士金汤焗小青龙', nameEn: 'Cheese Baked Lobster', 
-        badgeZh: '创新海味', badgeEn: 'Seafood', 
-        storyZh: '西式芝士与中式高汤的完美融合，小青龙肉质Q弹鲜甜，金汤浓郁回味无穷。', 
-        storyEn: 'Perfect fusion of western cheese and Chinese golden broth with fresh bouncy lobster.', 
+      { id: 'dish-5', category: 'ganyun',
+        nameZh: '太极核桃芝麻露', nameEn: 'Taiji Walnut Sesame Cream',
+        badgeZh: '东方美学', badgeEn: 'Oriental Art',
+        storyZh: '当醇厚黑芝麻遇见清甜核桃糊，在碗中“画”出完美的阴阳太极图。一碗阴阳，一口下去，半甜半香，是风味的交织，是智慧的品味，更是东方美学的温柔滋养。',
+        storyEn: 'Rich black sesame meets sweet walnut cream, forming a perfect Taiji yin-yang pattern. One bowl, two flavors — half sweet, half aromatic. A blend of taste, philosophy and gentle nourishment of oriental aesthetics.',
+        images: ['images/5.jpg'], visible: true },
+      { id: 'dish-6', category: 'dingdun',
+        nameZh: '鸡汤汆海蚌', nameEn: 'Chicken Broth Blanched Clam',
+        badgeZh: '闽菜经典', badgeEn: 'Fujian Classic',
+        storyZh: '闽菜重汤，请客布菜有着“喝汤重情”的风俗。闽菜调汤不同于粤菜的煲汤，调出的汤看似清澈透明，口感却鲜美无比。选用长乐漳港海蚌配上细火细炖的三茸清汤底，脆嫩鲜滑的蚌肉伴着醇香美味的鸡汤，二者相益得彰。',
+        storyEn: 'A centerpiece of Fujian cuisine. Clear yet intensely flavorful double-boiled chicken broth, paired with premium Zhanggang clams from Changle. Crisp tender clam meat and rich aromatic chicken broth, perfectly complementing each other.',
         images: ['images/6.jpg'], visible: true },
-      { id: 'dish-6', category: 'dingdun', 
-        nameZh: '30年老熟地糕蟹老鸭汤', nameEn: '30-yr Herbal Crab Duck Soup', 
-        badgeZh: '闽南药膳', badgeEn: 'Herbal Soup', 
-        storyZh: '三十年老熟地搭配鲜活糕蟹与老鸭，药膳同源之极品，汤色深沉而入口甘甜入魂。', 
-        storyEn: 'A supreme herbal blend of 30-year old rehmannia root, fresh roe crab, and old duck.', 
-        images: ['images/5.jpg'], visible: true }
+      { id: 'dish-7', category: 'quanyun',
+        nameZh: '安海土笋冻', nameEn: 'Anhai Sipunculid Jelly',
+        badgeZh: '百年古早味', badgeEn: 'Centenary Taste',
+        storyZh: '这一碗传承百年的安海古镇古早味，口感Q弹爽脆，淡淡的海鲜甜味的胶原蛋白，非常其妙。',
+        storyEn: 'A century-old street food from Anhai ancient town. Springy and crisp texture, delicate seafood sweetness with natural collagen — a uniquely wonderful local delicacy.',
+        images: ['images/7.jpg'], visible: true },
+      { id: 'dish-8', category: 'qingshu',
+        nameZh: '菊花海蜇拼甜虾生', nameEn: 'Chrysanthemum Jellyfish & Sweet Shrimp',
+        badgeZh: '精致冷盘', badgeEn: 'Premium Cold Plate',
+        storyZh: '精选优质如盛放菊蕊的海蜇花搭配有海的冰淇淋之称的甜虾，佐之鲜爽秘制捞汁，冰脆入味；颜值直接拉满，摆盘超精致；一口咔嚓脆爽，开胃又解腻，一口清甜入魂。',
+        storyEn: 'Premium chrysanthemum-shaped jellyfish paired with sweet shrimp, known as the ice cream of the sea. Tossed in secret refreshing sauce, icy crisp and flavorful. Exquisite presentation, perfect appetizer that cleanses the palate.',
+        images: ['images/8.jpg'], visible: true },
+      { id: 'dish-9', category: 'qingshu',
+        nameZh: '三味冷盘拼盘', nameEn: 'Three-style Cold Platter',
+        badgeZh: '三道前菜', badgeEn: 'Trio Appetizer',
+        storyZh: '窝笋清爽脆口的打开味蕾，安海捆蹄Q弹有韧性，坚实入味，冻鲍鱼清润软糯。三重口感次第绽放，是开席的绝佳序曲。',
+        storyEn: 'Crisp lettuce stem opens the palate, springy Anhai pork leg terrine is firm and flavorful, chilled abalone is soft and moist. Three layers of texture, the perfect opening for a banquet.',
+        images: ['images/9.jpg'], visible: true },
+      { id: 'dish-10', category: 'dingdun',
+        nameZh: '迷你火朣翅', nameEn: 'Mini Jinhua Ham Shark Fin Soup',
+        badgeZh: '隔水慢炖', badgeEn: 'Double-boiled',
+        storyZh: '精选30头南非金裙翅，净水泡发两日至回软，5年陈花雕酒去腥。以老鸡、排骨、瘦肉、火腿，宗谷瑶柱，6小时隔水炖制。高汤的浓郁与鱼翅浑然天成，翅针嚼劲不失，绵软幼滑。点缀烤制的蒋雪坊5年火腿丝和8年新会陈皮丝相佐之，更具风味。',
+        storyEn: 'Premium 30-head South African golden shark fin, soaked for two days, deodorized with 5-year aged Huadiao wine. Double-boiled for 6 hours with old chicken, pork ribs, lean meat, Jinhua ham and Hokkaido scallops. Rich broth with tender yet chewy fin needles, garnished with 5-year ham and 8-year Xinhui tangerine peel.',
+        images: ['images/10.jpg'], visible: true },
+      { id: 'dish-11', category: 'huoxiang',
+        nameZh: '脆皮牛小排', nameEn: 'Crispy Beef Short Ribs',
+        badgeZh: '中西合璧', badgeEn: 'East-West Fusion',
+        storyZh: '选用进口澳洲牛小排，加入八角，桂皮，豆蔻，香叶，丁香、黄酒和上等清鸡汤经过炖煮后激发牛肉原味。拍上脆皮粉炸至金黄，并佐之秘制酱汁，外脆内软，肉汁鲜美兼风味怡人。',
+        storyEn: 'Imported Australian beef short ribs, stewed with star anise, cinnamon, cardamom, bay leaf, clove, yellow wine and premium chicken broth. Coated and fried to golden crisp, served with secret sauce. Crisp outside, tender inside, rich juicy flavor.',
+        images: ['images/11.jpg'], visible: true },
+      { id: 'dish-12', category: 'dingdun',
+        nameZh: '金汤小米烩花胶', nameEn: 'Millet Golden Soup Fish Maw',
+        badgeZh: '滋补臻品', badgeEn: 'Nourishing Premium',
+        storyZh: '选用山西泌县的黄金小米，辅之新疆贵族南瓜，配上排骨，老鸡，火腿，瑶柱熬制4小时的浓汤组合以慢火煨制的湛江赤嘴。花胶肉质软糯鲜弹牙，小米软烂绵密，丝丝南瓜清香，整菜道鲜咸醇香，层次丰富，回味悠长。',
+        storyEn: 'Golden millet from Qinxian, Shanxi, paired with Xinjiang premium pumpkin. Slow-simmered with 4-hour rich broth of pork ribs, old chicken, ham and scallops, with Zhanjiang red mouth fish maw. Soft chewy fish maw, creamy millet, delicate pumpkin aroma, rich and layered umami.',
+        images: ['images/12.jpg'], visible: true },
+      { id: 'dish-13', category: 'huoxiang',
+        nameZh: '芝士金汤焗小青龙', nameEn: 'Cheese Baked Lobster in Gold Broth',
+        badgeZh: '海味创新', badgeEn: 'Seafood Innovation',
+        storyZh: '这一道菜实现了鲜、香、醇的完美碰撞，既有本港海鲜的清鲜本味，又有西式的浓郁奶香，口感丰富，层次分明，是一款兼具视觉与味觉享受的海鲜佳肴。',
+        storyEn: 'A perfect collision of freshness, aroma and richness. Clean sweetness of local lobster paired with creamy western-style cheese. Rich layers of flavor, a seafood delicacy for both the eyes and palate.',
+        images: ['images/13.jpg'], visible: true },
+      { id: 'dish-14', category: 'huoxiang',
+        nameZh: '黑松露大连鲍啫鸡煲', nameEn: 'Truffle Dalian Abalone Claypot Chicken',
+        badgeZh: '镬气十足', badgeEn: 'Sizzling Claypot',
+        storyZh: '选用龙岩河田鸡，空运过来的5头大连鲜鲍和云南香格里拉黑松露，采用粤菜啫啫烹饪技法，三种材料经过高温猛啫，鸡肉皮脆肉嫩，鲍鱼肉质鲜甜Q弹，加上黑松露独有的菌香，味道浓郁醇厚，咸香适口。',
+        storyEn: 'Longyan Hetian chicken, air-freighted Dalian fresh abalone and Yunnan Shangri-La black truffle. Cooked in Cantonese sizzling claypot style. Crisp skin tender chicken, sweet bouncy abalone, with unique truffle aroma — rich, savory and deeply aromatic.',
+        images: ['images/14.jpg'], visible: true },
+      { id: 'dish-15', category: 'qingshu',
+        nameZh: '红酒百香果皮', nameEn: 'Wine-soaked Passion Fruit Peel',
+        badgeZh: '开胃前菜', badgeEn: 'Appetizer',
+        storyZh: '选用有“天然维生素小金库”美称的钦密9号黄金百香果，取原汁留其皮，再加入红酒、洛神花熬汁浸泡。口感清爽开胃。',
+        storyEn: 'Premium Qinmi No.9 golden passion fruit, known as a natural vitamin treasure. Juice is extracted, peel is retained and soaked in red wine and roselle infusion. Refreshing and palate-opening.',
+        images: ['images/15.jpg'], visible: true },
+      { id: 'dish-16', category: 'huoxiang',
+        nameZh: '东星斑炒农家蛋', nameEn: 'East Star Garoupa with Farm Eggs',
+        badgeZh: '山海汇聚', badgeEn: 'Mountain & Sea',
+        storyZh: '山与海的汇聚，当金黄嫩滑的无菌蛋，邂逅深海东星斑。鸡蛋的醇厚，东星斑鱼肉的清甜，坚果、火腿，瑶柱的香气裹着滑嫩的蛋和鱼肉。榄仁提供口感，火腿增加咸鲜，在舌尖共舞，鲜而不腻。',
+        storyEn: 'Where mountain meets sea. Silky premium eggs meet deep-sea east star garoupa. Rich egg, sweet fish, with nuts, ham and scallop aroma. Olive nuts add texture, ham adds savoriness, fresh and never greasy.',
+        images: ['images/16.jpg'], visible: true },
+      { id: 'dish-17', category: 'huoxiang',
+        nameZh: '菌香雪花牛肉炒饭', nameEn: 'Mushroom Wagyu Beef Fried Rice',
+        badgeZh: '风土对话', badgeEn: 'Terroir Fusion',
+        storyZh: '当雪花牛肉的丰腴，撞上菌菇的醇厚。再加入自制的产自香格里拉的干巴菌酱，火候是唯一的语言，鲜香是共同的目的地。这一碗炒饭，是风土对话，也是味蕾的盛宴。',
+        storyEn: 'Marbled wagyu beef meets rich mushroom umami. With homemade Thelephora ganbajun sauce from Shangri-La. Perfect heat control brings out deep aroma, a feast of terroir on the palate.',
+        images: ['images/17.jpg'], visible: true }
     ];
 
     const CATEGORIES = [
@@ -653,7 +728,7 @@
 
       const filtered = MENU_ITEMS.filter(item => {
         if (!state.curatorMode && !item.visible) return false;
-        return state.activeCategory === 'all' || item.category === state.activeCategory;
+        return state.activeCategory === 'all' || item.category === item.category;
       });
       
       grid.innerHTML = filtered.map(item => {
@@ -912,7 +987,7 @@
     }
 
     // ==========================================
-    // 音乐播放控制与自动触发机制
+    // 音乐播放控制
     // ==========================================
     let audioPlayer;
     let isAudioPlaying = false;
@@ -973,7 +1048,7 @@
     }
 
     // ==========================================
-    // 掌席模式控制 (包含新增与编辑菜品)
+    // 掌席模式控制
     // ==========================================
     function openPasswordModal() { document.getElementById('passwordModal').classList.remove('hidden'); document.getElementById('passwordModal').classList.add('flex'); }
     function closePasswordModal() { document.getElementById('passwordModal').classList.add('hidden'); document.getElementById('passwordModal').classList.remove('flex'); document.getElementById('curatorPasswordInput').value = ''; }
@@ -1091,6 +1166,26 @@
         box.classList.remove('opacity-100', 'translate-y-0'); 
       }, 2500);
     }
+
+    // ==========================================
+    // 首页轮播图自动播放
+    // ==========================================
+    let heroSlideIndex = 0;
+    const heroSlides = document.querySelectorAll('.hero-slide');
+    const heroDots = document.querySelectorAll('.hero-dot');
+    
+    function switchHeroSlide() {
+      heroSlides.forEach((el, i) => {
+        el.style.opacity = i === heroSlideIndex ? '0.4' : '0';
+      });
+      heroDots.forEach((el, i) => {
+        el.classList.toggle('bg-gold-400', i === heroSlideIndex);
+        el.classList.toggle('bg-gold-400/30', i !== heroSlideIndex);
+      });
+      heroSlideIndex = (heroSlideIndex + 1) % heroSlides.length;
+    }
+    
+    setInterval(switchHeroSlide, 5000);
   </script>
 </body>
 </html>
