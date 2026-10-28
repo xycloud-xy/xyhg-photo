@@ -85,7 +85,7 @@
 <body class="bg-paper-texture min-h-screen flex flex-col selection:bg-gold-500/30 selection:text-gold-300">
 
   <!-- HTML5 音乐播放器 -->
-  <audio id="bgAudioPlayer" loop preload="auto">
+  <audio id="bgAudioPlayer" loop preload="auto"></audio>
 
   <!-- 顶部控制栏 -->
   <header class="sticky top-0 z-30 backdrop-blur-md bg-ink-950/85 border-b border-gold-500/15 transition-all">
@@ -183,6 +183,7 @@
       </div>
     </div>
   </section>
+
 
   <!-- 七大分类导航 -->
   <nav class="sticky top-16 z-20 backdrop-blur-md bg-ink-900/90 border-y border-gold-500/15">
@@ -306,7 +307,7 @@
     </div>
   </div>
 
-  <!-- 洒金笺席单 Modal -->
+  <!-- 洒金笺席单 Modal (无价格版，强化雅嘱，无云起印章，无雅集珍席顶标) -->
   <div id="waiterCardModal" onclick="if(event.target === this) closeWaiterCardModal()" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-md">
     <div class="relative w-full max-w-md max-h-[95vh] overflow-y-auto rounded-2xl p-1.5 bg-gradient-to-b from-gold-400/80 via-gold-600/50 to-gold-400/80 shadow-2xl no-scrollbar">
       
@@ -334,7 +335,7 @@
             <div id="waiterCardItems" class="divide-y divide-[#8C6D3F]/15 py-1"></div>
           </div>
           
-          <!-- 席间雅嘱备注区 -->
+          <!-- 醒目的席间雅嘱备注区 -->
           <div class="mt-5 pt-4 border-t-[1.5px] border-dashed border-[#8C6D3F]/40 bg-[#EAE2D3]/40 rounded-b-lg -mx-2 px-3 pb-3">
             <div class="text-[11px] text-[#705528] mb-2 font-semibold tracking-widest text-center" id="card-lbl-note">✿ 席 间 雅 嘱 / 偏 好 备 注 ✿</div>
             <div id="cardNoteValue" class="text-[13px] text-[#9B2C20] font-bold leading-relaxed text-center min-h-[2rem]"></div>
@@ -379,7 +380,7 @@
     </div>
   </div>
 
-  <!-- 掌席相册编辑 Modal -->
+  <!-- 掌席相册编辑 Modal (支持新增、多图轮播) -->
   <div id="curatorEditModal" onclick="if(event.target === this) closeCuratorEditModal()" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/85 backdrop-blur-md">
     <div class="w-full max-w-md bg-ink-900 border border-gold-500/40 rounded-2xl p-6 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-gold-500/20 pb-3">
@@ -438,11 +439,11 @@
   </div>
 
   <script>
-    // 默认陶笛禅意轻音乐
+    // 默认陶笛禅意轻音乐：宗次郎《故乡的原风景》（网易云免费直链，陶笛/奥卡利那笛独奏）
     const DEFAULT_MUSIC_URL = 'https://music.163.com/song/media/outer/url?id=481375.mp3';
 
-    // 默认菜品数据（17道完整版）
-    const DEFAULT_MENU_ITEMS = [
+    // 默认数据配置 (包含本地实拍图命名)
+        const DEFAULT_MENU_ITEMS = [
       { id: 'dish-1', category: 'minhai',
         nameZh: '闽南传统姜母鸭', nameEn: 'Minnan Ginger Duck',
         badgeZh: '非遗古法', badgeEn: 'Heritage',
@@ -728,7 +729,7 @@
 
       const filtered = MENU_ITEMS.filter(item => {
         if (!state.curatorMode && !item.visible) return false;
-        return state.activeCategory === 'all' || item.category === item.category;
+        return state.activeCategory === 'all' || item.category === state.activeCategory;
       });
       
       grid.innerHTML = filtered.map(item => {
@@ -987,7 +988,7 @@
     }
 
     // ==========================================
-    // 音乐播放控制
+    // 音乐播放控制与自动触发机制
     // ==========================================
     let audioPlayer;
     let isAudioPlaying = false;
@@ -1048,7 +1049,7 @@
     }
 
     // ==========================================
-    // 掌席模式控制
+    // 掌席模式控制 (包含新增与编辑菜品)
     // ==========================================
     function openPasswordModal() { document.getElementById('passwordModal').classList.remove('hidden'); document.getElementById('passwordModal').classList.add('flex'); }
     function closePasswordModal() { document.getElementById('passwordModal').classList.add('hidden'); document.getElementById('passwordModal').classList.remove('flex'); document.getElementById('curatorPasswordInput').value = ''; }
@@ -1166,26 +1167,6 @@
         box.classList.remove('opacity-100', 'translate-y-0'); 
       }, 2500);
     }
-
-    // ==========================================
-    // 首页轮播图自动播放
-    // ==========================================
-    let heroSlideIndex = 0;
-    const heroSlides = document.querySelectorAll('.hero-slide');
-    const heroDots = document.querySelectorAll('.hero-dot');
-    
-    function switchHeroSlide() {
-      heroSlides.forEach((el, i) => {
-        el.style.opacity = i === heroSlideIndex ? '0.4' : '0';
-      });
-      heroDots.forEach((el, i) => {
-        el.classList.toggle('bg-gold-400', i === heroSlideIndex);
-        el.classList.toggle('bg-gold-400/30', i !== heroSlideIndex);
-      });
-      heroSlideIndex = (heroSlideIndex + 1) % heroSlides.length;
-    }
-    
-    setInterval(switchHeroSlide, 5000);
   </script>
 </body>
 </html>
